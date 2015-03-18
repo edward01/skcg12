@@ -25,7 +25,7 @@
 #   _id                     objectid
 #   name                    unicode
 # -------------------------------------------------
-    
+
 import os
 import re
 import datetime
@@ -41,7 +41,8 @@ from reports import reports_app
 
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-app = Flask('G12', template_folder=tmpl_dir)
+static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+app = Flask('G12', template_folder=tmpl_dir, static_folder=static_dir)
 app.config.from_object('config')
 app.secret_key = '\x9c%\xf6\x94\x9b\xd0\x82OE\xber2!)\x1e\xf1\xb3\xb0\x05\x7fn\x0f\xfe\xbe'
 
