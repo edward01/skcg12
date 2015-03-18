@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% set active_page = "members" %}
+{% set sub_active_page = "add" %}
+{% block title %}Members{% endblock %}
+
+{% block head %}
+<style type="text/css">
+    .box-header-table { font-size: 14px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="box col-md-12">
+        <div class="box-inner">
+            <div class="box-header well">
+                <h2><i class="glyphicon glyphicon-user"></i> Members</h2>                
+            </div>
+            <div class="box-content row">
+                <div class="col-md-12">
+                    <form role="form" id="form_member_info" method="post" action="{{ url_for('.save') }}">
+                        <input type="hidden" name="member_id" value="">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Last Name</label>
+                            <input type="text" class="form-control" name="lastname" required minlength="2">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">First Name</label>
+                            <input type="text" class="form-control" name="firstname" required minlength="2">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Middle Name</label>
+                            <input type="text" class="form-control" name="middlename">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Email Address</label>
+                            <input type="email" class="form-control" name="email_address" required>
+                        </div>
+                        <div class="text-left">
+                            <hr>
+                            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Submit</button>
+                            <button type="button" class="btn btn-default" id="bt_cancel">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<script src="{{ url_for('static', filename='plugins/jquery.validate.min.js') }}"></script>
+<script>
+$(function() {
+    $("#form_member_info").find('input[type="text"], textarea').first().focus();
+    $("#form_member_info").validate();
+
+    $('#bt_cancel').click(function() {
+        window.location = "{{ url_for('.index') }}";
+    });
+
+    
+});
+</script>
+{% endblock %}

@@ -1,0 +1,6 @@
+/*- common functions and utilities (ej) */
+
+label.error {
+	color: red; 
+	font-weight: normal; 
+}
