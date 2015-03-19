@@ -29,11 +29,12 @@
 import os
 import re
 import datetime
-from flask import Flask, render_template, redirect, url_for, request, session, flash
+from flask import Flask, render_template, redirect, url_for, request, session, flash, jsonify
 from config import DB_CONFIG
 import pymongo_safe
 from utils import check_hash
 from pprint import pprint
+from flask.ext.sqlalchemy import SQLAlchemy
 
 from dashboard import dashboard_app
 from members import members_app
@@ -43,6 +44,10 @@ from reports import reports_app
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
 app = Flask('G12', template_folder=tmpl_dir, static_folder=static_dir)
+
+db = SQLAlchemy(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://skc:temp@mysql.server/skc$g12'
+
 app.config.from_object('config')
 app.secret_key = '\x9c%\xf6\x94\x9b\xd0\x82OE\xber2!)\x1e\xf1\xb3\xb0\x05\x7fn\x0f\xfe\xbe'
 
@@ -126,6 +131,28 @@ def logout():
     print '== logout get'
     session.clear()
     return redirect(url_for('.login'))
+
+
+class test(db.Model):
+    __tablename__ = 'test'
+    id = db.Column(db.Integer, primary_key = True)
+    username = db.Column(db.String(50))
+    firstname = db.Column(db.String(50))
+    lastname = db.Column(db.String(50))
+
+
+@app.route('/mysql_test', methods=['GET'])
+def mysql_test():
+    results = test.query.limit(10).offset(0).all()
+
+    json_results = []
+    for result in results:
+        d = {'username': result.username,
+            'firstname': result.firstname,
+            'lastname': result.lastname}
+        json_results.append(d)
+
+    return jsonify(items=json_results)
 
 
 if __name__ == '__main__':
