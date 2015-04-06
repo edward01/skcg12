@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from flask import Blueprint, session, render_template, url_for, request, redirect, flash, current_app as app
-from bson.objectid import ObjectId
-from bson.json_util import dumps
+# from bson.objectid import ObjectId
+# from bson.json_util import dumps
 from pprint import pprint
 import os
 
@@ -22,7 +22,7 @@ def index():
 @members_app.route('/open', methods=['GET'])
 def add_edit():
 	# gateways = app.db.gateways.find()
-	return render_template('members/add_edit.html')	
+	return render_template('members/add_edit.html')
 
 
 @members_app.route('/save', methods=['POST'])
