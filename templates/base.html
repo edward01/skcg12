@@ -177,7 +177,7 @@
                 <div>
                     <ul class="breadcrumb">
                         <li>
-                            <a href="#">{{ active_page|capitalize }}</a>
+                            <a href="/{{ active_page }}">{{ active_page|capitalize }}</a>
                         </li>
                         {% if sub_active_page %}
                         <li>
@@ -186,7 +186,7 @@
                         {% endif %}
                     </ul>
                 </div>
-                {% block content %}{% endblock %}                
+                {% block content %}{% endblock %}
                 <!-- content ends -->
             </div>
             <!--/#content.col-md-0-->
@@ -263,7 +263,7 @@ $(function() {
                 });
             {% endfor %}
         {% endif %}
-    {% endwith %}    
+    {% endwith %}
 });
 </script>
 

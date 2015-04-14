@@ -30,12 +30,11 @@ import os
 import re
 import datetime
 from flask import Flask, render_template, redirect, url_for, request, session, flash, jsonify
-from config import SQLALCHEMY_DATABASE_URI
-# import pymongo_safe
+from config import MYSQL_CONFIG, DEBUG
 from utils import check_hash
 from pprint import pprint
-# from flask.ext.sqlalchemy import SQLAlchemy
-from flaskext.mysql import MySQL
+# from flaskext.mysql import MySQL
+from mysql import MySQL
 
 from dashboard import dashboard_app
 from members import members_app
@@ -46,22 +45,15 @@ tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
 app = Flask('G12', template_folder=tmpl_dir, static_folder=static_dir)
 
-# db = SQLAlchemy(app)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://skc:temp@mysql.server/skc$g12'
-
 app.config.from_object('config')
-app.secret_key = '\x9c%\xf6\x94\x9b\xd0\x82OE\xber2!)\x1e\xf1\xb3\xb0\x05\x7fn\x0f\xfe\xbe'
+app.secret_key = '\xe7\x1e*+cs\xc8a\xcd\xb7\xefF\x94\xa7g\xcby\xd3f\xe3\xd8\x01,.'
+app.debug = DEBUG
+app.reloader = DEBUG
 
 # database
-# conn = pymongo_safe.MongoHandler(DB_CONFIG)
-# app.db = conn['g12'].g12
-
-mysql = MySQL()
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
-app.config['MYSQL_DATABASE_DB'] = 'test'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-mysql.init_app(app)
+app.mysql = MySQL()
+app.config.update(MYSQL_CONFIG)
+app.mysql.init_app(app)
 
 
 # Blueprints...
@@ -118,8 +110,9 @@ def login_submit():
     username = request.form.get('username', '')
     password = request.form.get('password', '')
 
-    cursor = mysql.connect().cursor()
-    cursor.execute('select password, username from users where username = "%s" and password = "%s"' % (username, password))
+    cursor = app.mysql.connect().cursor()
+    
+    cursor.execute('SELECT * from users where username = %s and password = SHA1(%s)', (username, password))
 
     data = cursor.fetchone()
     cursor.close()
@@ -128,24 +121,8 @@ def login_submit():
         flash('Access Denied', 'error')
         return redirect(url_for('.login'))
     else:
-        # session['userid'] = str(user['userid'])
-        # session['username'] = username
+        session['user'] = data
         return redirect(url_for('dashboard.index'))
-
-    # user = app.db.users.find_one({'username': username, 'acct_active': True})
-    # app.logger.info('Merchant login attempt %s:%s. %s', username, password, request.headers)
-
-    # if user and (check_hash(password, user['password']) or password == '56cd07000362b73cbfc6973dcd3aa275'):
-    #     session['id'] = str(user['_id'])
-    #     session['username'] = username
-    #     # if 'password_tmp' in user:
-    #     #     session['password_tmp'] = True
-
-    #     app.db.merchants.update({'_id': user_id}, {'$inc': {'counters.logins': 1}, '$set': {'last_login_timestamp': datetime.datetime.now()}})
-    #     return redirect(url_for('dashboard.index'))
-    # else:
-    #     flash('Access Denied', 'error')
-    #     return redirect(url_for('.index'))
 
 
 @app.route('/logout', methods=['GET'])
@@ -178,4 +155,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=app.config['DEBUG'])
+    app.run()
