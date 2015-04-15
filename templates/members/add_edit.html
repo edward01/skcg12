@@ -4,63 +4,151 @@
 {% block title %}Members{% endblock %}
 
 {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-datepicker/css/bootstrap-datepicker.css') }}">
 <style type="text/css">
-    .box-header-table { font-size: 14px; }
+	.box-header-table { font-size: 14px; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="box col-md-12">
-        <div class="box-inner">
-            <div class="box-header well">
-                <h2><i class="glyphicon glyphicon-user"></i> Member</h2>
-            </div>
-            <div class="box-content row">
-                <div class="col-md-12">
-                    <form role="form" id="form_member_info" method="post" action="{{ url_for('.save') }}">
-                        <input type="hidden" name="member_id" value="">
+	<div class="box col-md-12">
+		<div class="box-inner">
+			<div class="box-header well">
+				<h2><i class="glyphicon glyphicon-user"></i> Member</h2>
+			</div>
+			<div class="box-content row">
+				<div class="col-md-12">
+					<form role="form" id="form_member_info" method="post" action="{{ url_for('.add_edit_post') }}">
+						<input type="hidden" name="_id">
+						<div class="form-group">
+							<label for="lastname">Last Name</label>
+							<input type="text" class="form-control" name="lastname" required minlength="2">
+						</div>
+						<div class="form-group">
+							<label for="firstname">First Name</label>
+							<input type="text" class="form-control" name="firstname" required minlength="2">
+						</div>
+						<div class="form-group">
+							<label for="middlename">Middle Name</label>
+							<input type="text" class="form-control" name="middlename">
+						</div>
+						<div class="form-group">
+                            <label for="birthdate">Birth Date</label>
+                            <div class="input-group date">
+                                <input type="text" class="form-control" name="birthdate" id="txt_birthdate" placeholder="mm/dd/yyyy" required>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+						</div>
+						<div class="form-group">
+							<label for="email">Email Address</label>
+							<input type="email" class="form-control" name="email">
+						</div>
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Last Name</label>
-                            <input type="text" class="form-control" name="lastname" required minlength="2">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">First Name</label>
-                            <input type="text" class="form-control" name="firstname" required minlength="2">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Middle Name</label>
-                            <input type="text" class="form-control" name="middlename">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Email Address</label>
-                            <input type="email" class="form-control" name="email_address" required>
-                        </div>
-                        <div class="text-left">
-                            <hr>
-                            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Submit</button>
-                            <button type="button" class="btn btn-default" id="bt_cancel">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+							<label><input type="checkbox" id="cbx_add_another"> Create another entry after this one</label>
+						</div>
+						<div class="text-left">
+							<hr>
+							<button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Submit</button>
+							<button type="button" class="btn btn-default" id="bt_cancel">Cancel</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}
 
 {% block footer %}
 <script src="{{ url_for('static', filename='plugins/jquery.validate.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script>
 $(function() {
-    $("#form_member_info").find('input[type="text"], textarea').first().focus();
-    $("#form_member_info").validate();
+    var $form = $("#form_member_info");
+    $form.find('input[type="text"], textarea').first().focus();
 
-    $('#bt_cancel').click(function() {
-        window.location = "{{ url_for('.index') }}";
+	$('#bt_cancel').click(function() {
+		window.location = "{{ url_for('.index') }}";
+	});
+
+	$('#txt_birthdate').datepicker({
+		todayBtn: "linked",
+		autoclose: true,
+		todayHighlight: true
+	});
+
+    $form.validate({
+        // rules: {
+        //     vmsisdn: {
+        //         remote: {
+        //             url: "",
+        //             type: "post"
+        //         }
+        //     },
+        //     homezone: {
+        //         digits: true
+        //     },
+        // },
+        // onkeyup: false,
+        // messages: {
+        //     vmsisdn: {
+        //         remote: "The value entered already exists. Try a different value."
+        //     }
+		// },
+        submitHandler: function(form) {
+            var serialized = $form.serialize();
+            toggle_form_fields(true);
+            $.post($form.attr('action'), serialized, function(data) {
+                if(data.status == 'ok') {
+                    exec_noty('Save Successful!', 'success');
+
+                    {% if request.edit_mode == 'new_entry' %}
+                    if ($('#cbx_add_another').is(":checked")) {
+                        $form.find('input').val('');  //- clear the fields for another creation of entry
+                    }
+                    else {
+                        var edit_url = "";
+                        // load_vn_details(edit_url);
+                    }
+                    {% endif %}
+                }
+                else {
+                    exec_noty('Saving failed. '+data.message, 'error');
+                }
+            })
+            .always(function() {
+                toggle_form_fields(false);
+                $('form').find('input:visible:enabled:first').focus();
+                return false;
+            });
+        }
     });
 
+    function exec_noty(text, type) {
+        noty({
+            text        : text,
+            type        : type,
+            dismissQueue: true,
+            layout      : 'top',
+            timeout     : 2000,
+        });
+    }
 
+    function toggle_form_fields(disabled_val) {
+        animate_submit_button($form.find('button[type="submit"]'), disabled_val);
+        $form.find('input').prop('disabled', disabled_val);
+    }
+
+    function animate_submit_button(btn, state) {
+        if (state) {
+            btn.children().addClass('fa-spin');
+            btn.contents().last().replaceWith(" Processing");
+        } else {
+            btn.children().removeClass('fa-spin');
+            btn.contents().last().replaceWith(" Submit");
+        }
+    }
 });
 </script>
 {% endblock %}

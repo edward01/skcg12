@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-from flask import Blueprint, session, render_template, url_for, request, redirect, flash, current_app as app
+from flask import Blueprint, session, render_template, url_for, request, redirect, flash, current_app as app, jsonify
 # from bson.objectid import ObjectId
 # from bson.json_util import dumps
+from datetime import datetime
 from pprint import pprint
 import os
 
@@ -19,24 +20,49 @@ def index():
 	return render_template('members/index.html')
 
 
-@members_app.route('/open', methods=['GET'])
-def add_edit():
-	# gateways = app.db.gateways.find()
+@members_app.route('/add-edit/<int:member_id>', methods=['GET'])
+def add_edit(member_id):
+	request.edit_mode = edit_mode  #- 'new-entry', 'edit-entry'
 	return render_template('members/add_edit.html')
 
 
-@members_app.route('/save', methods=['POST'])
-def save():
-	member_id = request.form.get('member_id', '')
-	if len(member_id) > 0:
-		#- update mode
-		pass
-	else:
-		#- insert mode
-		pass
+@members_app.route('/add-edit-post', methods=['POST'])
+def add_edit_post():
+	member_id = request.form.get('_id', '')
+	lastname = request.form.get('lastname', '')
+	firstname = request.form.get('firstname', '')
+	middlename = request.form.get('middlename', '')
+	email = request.form.get('email', '')
+	birthdate = request.form.get('birthdate', '')
 
-	flash('Save Successful', 'success')
-	return redirect(url_for('.add_edit'))
+	try:
+		sql_conn = app.mysql.get_db()
+		cursor = sql_conn.cursor()
+
+		if len(member_id) > 0:
+			#- update mode
+			pass
+		else:
+			#- insert mode
+			insert_stmt = (
+				"INSERT INTO members (userid, lastname, firstname, middlename, email, birthdate) "
+				"VALUES (%s, %s, %s, %s, %s, %s) "
+			)
+			insert_data = (0, lastname, firstname, middlename, email, string_to_date_obj(birthdate))
+			cursor.execute(insert_stmt, insert_data)
+
+		sql_conn.commit()
+		return jsonify({'status': 'ok'})
+
+	except Exception as e:
+		print 'Exception error:', e
+		return jsonify({'status': 'error', 'message': 'Processing error. Please try again later.'})
+	finally:
+		cursor.close()
+
+
+def string_to_date_obj(input_val):
+	return datetime.strptime(input_val, '%m/%d/%Y')
 
 
 # @bp_app.route('/add', methods=['POST'])
