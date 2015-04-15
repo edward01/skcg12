@@ -24,68 +24,17 @@
                 </div> -->
             </div>
             <div class="">
-                <table class="table table-bordered table-striped table-hover">
+                <table class="table table-bordered table-striped table-hover" id="tbl_members">
                     <thead>
                         <tr class="box-header box-header-table">
-                            <th>Username</th>
-                            <th>Date registered</th>
-                            <th>Role</th>
-                            <th>Status</th>
+                            <th>Name</th>
+                            <th>Birthday</th>
+                            <th>Gender</th>
+                            <th>Cell Leader</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Muhammad Usman</td>
-                            <td class="center">2012/01/01</td>
-                            <td class="center">Member</td>
-                            <td class="center">
-                                <span class="label-success label label-default">Active</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>White Horse</td>
-                            <td class="center">2012/02/01</td>
-                            <td class="center">Staff</td>
-                            <td class="center">
-                                <span class="label-default label label-danger">Banned</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Sheikh Heera</td>
-                            <td class="center">2012/02/01</td>
-                            <td class="center">Admin</td>
-                            <td class="center">
-                                <span class="label-default label">Inactive</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Saruar</td>
-                            <td class="center">2012/03/01</td>
-                            <td class="center">Member</td>
-                            <td class="center">
-                                <span class="label-warning label label-default">Pending</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Sana Amrin</td>
-                            <td class="center">2012/01/21</td>
-                            <td class="center">Staff</td>
-                            <td class="center">
-                                <span class="label-success label label-default">Active</span>
-                            </td>
-                        </tr>
-                    </tbody>
                 </table>
-                <ul class="pagination pagination-centered">
-                    <li><a href="#">Prev</a></li>
-                    <li class="active">
-                        <a href="#">1</a>
-                    </li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">Next</a></li>
-                </ul>
+                <div class="grid_footer"></div>
             </div>
         </div>
     </div>
@@ -93,8 +42,44 @@
 {% endblock %}
 
 {% block footer %}
+<script src="{{ url_for('static', filename='plugins/datatables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables/js/jquery.dataTables-redraw.js') }}"></script>
 <script>
 $(function() {
+    oTable = $('#tbl_members').dataTable({
+    	'processing': true,
+    	'serverSide': true,
+    	'ajax': {
+    		url: '{{ url_for(".list_members") }}',
+    		data: function(d) {
+    			// d.status = $("#ddl_status").val();
+    		},
+    		type: 'POST'
+    	},
+    	'sDom': '<"top">rt<"clear"><"grid_footer"ip>',
+    	'order': [
+    		[0, "asc"]
+    	],
+    	'columns': [
+            {
+        		'data': '_id',
+        		'render': function(data, type, row) {
+        			return '<a href="#">'+ row['member_name'] +'</a>'
+                }
+    		},
+            {'data': 'birthdate'},
+            {'data': 'gender'},
+            {'data': 'cell_leader_id'}
+    	]
+    });
+    // $('#myInputTextField').keyup(function() {
+    // 	oTable.fnFilter($(this).val());
+    // });
+    // $('#ddl_status').change(function() {
+    // 	oTable.fnDraw(); //-- reload the datatable
+    // });
+
+
 
 });
 </script>

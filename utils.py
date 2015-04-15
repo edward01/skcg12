@@ -30,4 +30,8 @@ def generate_random_password():
      chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
      for k in range(0, 8):
           str.append(random.choice(chars))
-     return ''.join(str)	
+     return ''.join(str)
+
+
+def convert_date_to_string(arg):
+	pass

@@ -16,14 +16,74 @@ def before_request():
 
 @members_app.route('/', methods=['GET'])
 def index():
-	# gateways = app.db.gateways.find()
 	return render_template('members/index.html')
 
 
+@members_app.route('/list-members', methods=['POST'])
+def list_members():
+	# querystring parameters
+	rec_draw = int(request.form.get('draw'))
+	rec_sort_column = int(request.form.get('order[0][column]'))
+	rec_sort_order = str(request.form.get('order[0][dir]'))
+	rec_start = int(request.form.get('start'))
+	rec_limit = int(request.form.get('length'))
+	# rec_search_val = str(request.form.get('search_val')).replace('"', '').replace("'", "")
+	# rec_search_status = request.form.get('search_status')
+
+	# sort_columns = [
+	# 	'lastname',
+	# 	'vmsisdn',
+	# 	'vnstatus',
+	# 	'allocation_date',
+	# 	'availability_date',
+	# 	'quarantined_date',
+	# 	'homezone'
+	# ]
+
+	sql_limit = '%s, %s' % (rec_start, rec_limit)
+	# sql_sort = '%s %s' % (sort_columns[rec_sort_column], rec_sort_order.upper())
+	# sql_filter = '('
+	# sql_filter += 'vmsisdn LIKE "%'+ rec_search_val +'%" OR '
+	# sql_filter += 'homezone LIKE "%'+ rec_search_val +'%"'
+	# sql_filter += ') '
+	# if rec_search_status != '':
+	# 	sql_filter += 'AND vnstatus = '+ rec_search_status
+
+	cursor = app.mysql.get_db().cursor()
+	cursor.execute("SELECT COUNT(_id) as cnt FROM members WHERE 1=1")
+	members_cnt = cursor.fetchone()['cnt']
+	cursor.execute("SELECT *, concat(lastname, ', ', firstname, ' ', middlename) as member_name FROM members WHERE 1=1 LIMIT %s" % (sql_limit))
+	# cursor.execute("SELECT * FROM members WHERE %s ORDER BY %s LIMIT %s" % (sql_filter, sql_sort, sql_limit))
+	members = list(cursor.fetchall())
+	cursor.close()
+
+	pprint(members)
+
+	# for member in members:
+	# 	vn['vnstatus'] = search_vnstatus(vn['vnstatus'])
+	# 	vn['allocation_date'] = format_date_value(vn['allocation_date'])
+	# 	vn['availability_date'] = format_date_value(vn['availability_date'])
+	# 	vn['quarantined_date'] = format_date_value(vn['quarantined_date'])
+
+	members_dt = {
+		'recordsTotal': members_cnt,
+		'recordsFiltered': members_cnt,
+		'data': members,
+		'error': ''
+	}
+	return jsonify(members_dt)
+
+
+@members_app.route('/add-edit', methods=['GET'])
 @members_app.route('/add-edit/<int:member_id>', methods=['GET'])
-def add_edit(member_id):
-	request.edit_mode = edit_mode  #- 'new-entry', 'edit-entry'
-	return render_template('members/add_edit.html')
+def add_edit(member_id=None):
+	if member_id is None:
+		#- New Entry Mode
+		member = {}
+	else:
+		#- Edit Mode
+		member = {}
+	return render_template('members/add_edit.html', member=member)
 
 
 @members_app.route('/add-edit-post', methods=['POST'])
@@ -34,6 +94,8 @@ def add_edit_post():
 	middlename = request.form.get('middlename', '')
 	email = request.form.get('email', '')
 	birthdate = request.form.get('birthdate', '')
+	gender = request.form.get('gender', '')
+	cell_leader_id = request.form.get('cell_leader_id', '')
 
 	try:
 		sql_conn = app.mysql.get_db()
@@ -45,10 +107,10 @@ def add_edit_post():
 		else:
 			#- insert mode
 			insert_stmt = (
-				"INSERT INTO members (userid, lastname, firstname, middlename, email, birthdate) "
+				"INSERT INTO members (lastname, firstname, middlename, email, birthdate, gender, cell_leader_id) "
 				"VALUES (%s, %s, %s, %s, %s, %s) "
 			)
-			insert_data = (0, lastname, firstname, middlename, email, string_to_date_obj(birthdate))
+			insert_data = (lastname, firstname, middlename, email, string_to_date_obj(birthdate), gender, cell_leader_id)
 			cursor.execute(insert_stmt, insert_data)
 
 		sql_conn.commit()
