@@ -35,3 +35,10 @@ def generate_random_password():
 
 def convert_date_to_string(arg):
 	pass
+
+
+def cint(sVal):
+	try:
+		return int(sVal)
+	except Exception as e:
+		return 0

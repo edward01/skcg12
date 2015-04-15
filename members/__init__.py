@@ -5,6 +5,7 @@ from flask import Blueprint, session, render_template, url_for, request, redirec
 from datetime import datetime
 from pprint import pprint
 import os
+import utils
 
 members_app = Blueprint('members', __name__, url_prefix='/members')
 
@@ -95,7 +96,7 @@ def add_edit_post():
 	email = request.form.get('email', '')
 	birthdate = request.form.get('birthdate', '')
 	gender = request.form.get('gender', '')
-	cell_leader_id = request.form.get('cell_leader_id', '')
+	cell_leader_id = utils.cint(request.form.get('cell_leader_id', ''))
 
 	try:
 		sql_conn = app.mysql.get_db()
@@ -108,9 +109,9 @@ def add_edit_post():
 			#- insert mode
 			insert_stmt = (
 				"INSERT INTO members (lastname, firstname, middlename, email, birthdate, gender, cell_leader_id) "
-				"VALUES (%s, %s, %s, %s, %s, %s) "
+				"VALUES (%s, %s, %s, %s, %s, %s, %s) "
 			)
-			insert_data = (lastname, firstname, middlename, email, string_to_date_obj(birthdate), gender, cell_leader_id)
+			insert_data = (lastname, firstname, middlename, email, string_to_date_obj(birthdate), gender, int(cell_leader_id))
 			cursor.execute(insert_stmt, insert_data)
 
 		sql_conn.commit()
