@@ -56,7 +56,7 @@
             <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
                 <!-- <img alt="Charisma Logo" src="{{ url_for('static', filename='img/logo.png') }}" class="hidden-xs"/> -->
                 <img class="hidden-xs" src="{{ url_for('static', filename='img/logo.png') }}" alt="Church Logo">
-                <span>Name Here</span>
+                <span>{{ config.APP_TITLE }}</span>
             </a>
             <!-- user dropdown starts -->
             <div class="btn-group pull-right">
