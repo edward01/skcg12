@@ -32,7 +32,7 @@ def generate_random_password():
           str.append(random.choice(chars))
      return ''.join(str)
 
-
+from datetime import datetime
 def convert_string_to_date(input_val):
 	return datetime.strptime(input_val, '%m/%d/%Y')
 def convert_date_to_string(input_val):

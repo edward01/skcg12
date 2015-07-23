@@ -2,7 +2,7 @@
 from flask import Blueprint, session, render_template, url_for, request, redirect, flash, current_app as app, jsonify
 # from bson.objectid import ObjectId
 # from bson.json_util import dumps
-from datetime import datetime
+# from datetime import datetime
 from pprint import pprint
 import os
 from utils import convert_string_to_date, convert_date_to_string, generate_random_password, cint
@@ -108,7 +108,7 @@ def add_edit_post():
 	email = request.form.get('email', '')
 	birthdate = request.form.get('birthdate', '')
 	gender = request.form.get('gender', '')
-	cell_leader_id = utils.cint(request.form.get('cell_leader_id', ''))
+	cell_leader_id = cint(request.form.get('cell_leader_id', ''))
 	username = request.form.get('username', '')
 	# time.sleep(5)
 
