@@ -79,7 +79,7 @@ def list_members():
 @members_app.route('/details', methods=['GET'])
 @members_app.route('/details/<string:member_id>', methods=['GET'])
 def add_edit(member_id=None):
-	if member_id is None:
+	if member_id is None or not isinstance(member_id, int):
 		#- New Entry Mode
 		entry_mode = 'add'
 		member = {}
@@ -93,6 +93,9 @@ def add_edit(member_id=None):
 		cursor.execute("SELECT * FROM users WHERE member_id=%s" % member_id)
 		user_acct = cursor.fetchone()
 		cursor.close()
+
+		if member is None:
+			return redirect(url_for('.add_edit'))
 
 		member['birthdate'] = convert_date_to_string(member['birthdate'])
 	return render_template('members/add_edit.html', member=member, user_acct=user_acct, entry_mode=entry_mode)
