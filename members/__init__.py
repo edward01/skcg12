@@ -79,7 +79,7 @@ def list_members():
 @members_app.route('/details', methods=['GET'])
 @members_app.route('/details/<string:member_id>', methods=['GET'])
 def add_edit(member_id=None):
-	if member_id is None or not isinstance(member_id, int):
+	if member_id is None or not member_id.isdigit():
 		#- New Entry Mode
 		entry_mode = 'add'
 		member = {}
