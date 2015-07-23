@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% set active_page = "members" %}
-{% set sub_active_page = "add" %}
+{% set sub_active_page = entry_mode %}
 {% block title %}Members{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.noty.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/noty_theme_default.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-datepicker/css/bootstrap-datepicker.css') }}">
 <style type="text/css">
 	.box-header-table { font-size: 14px; }
+	ul.nav-tabs { margin-left: 0px !important; margin-right: 0px !important; }
+	img.member-avatar {
+		max-width: 130px;
+		max-height: 120px;
+	}
 </style>
 {% endblock %}
 
@@ -17,50 +20,87 @@
 	<div class="box col-md-12">
 		<div class="box-inner">
 			<div class="box-header well">
-				<h2><i class="glyphicon glyphicon-user"></i> Member</h2>
+				<h2><i class="glyphicon glyphicon-user"></i> {{ entry_mode|capitalize }} Member</h2>
 			</div>
 			<div class="box-content row">
 				<div class="col-md-12">
 					<form role="form" id="form_member_info" method="post" action="{{ url_for('.add_edit_post') }}">
-						<input type="hidden" name="_id">
-						<div class="form-group">
-							<label for="lastname">Last Name</label>
-							<input type="text" class="form-control" name="lastname" required minlength="2">
+						<input type="hidden" name="_id" value="{{ member['_id'] }}">
+
+						<!-- Nav tabs -->
+						<ul class="nav nav-tabs" role="tablist">
+							<li role="presentation" class="active"><a href="#primary" aria-controls="primary" role="tab" data-toggle="tab">Primary Info</a></li>
+							<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Church Profile</a></li>
+							<li role="presentation"><a href="#user_acct" aria-controls="user_acct" role="tab" data-toggle="tab">User Account</a></li>
+						</ul>
+						<br>
+
+						<!-- Tab panes -->
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane active" id="primary">
+								<div class="form-group">
+									<label for="lastname">Photo</label>
+									<br>
+									<img src="{{ url_for('static', filename='img/default_avatar.jpg') }}" alt="Sample Avatar" class="img-thumbnail member-avatar" />
+								</div>
+								<div class="form-group">
+									<label for="lastname">Last Name</label>
+									<input type="text" class="form-control" name="lastname" required minlength="2" value="{{ member['lastname'] }}" placeholder="Ex: Dela Cruz">
+								</div>
+								<div class="form-group">
+									<label for="firstname">First Name</label>
+									<input type="text" class="form-control" name="firstname" required minlength="2" value="{{ member['firstname'] }}" placeholder="Ex: Pedro">
+								</div>
+								<div class="form-group">
+									<label for="middlename">Middle Name</label>
+									<input type="text" class="form-control" name="middlename" value="{{ member['middlename'] }}" placeholder="Ex: Protacio">
+								</div>
+								<div class="form-group">
+		                            <label for="birthdate">Birth Date</label>
+		                            <div class="input-group date">
+		                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+		                                <input type="text" class="form-control" name="birthdate" id="txt_birthdate" placeholder="mm/dd/yyyy" required value="{{ member['birthdate'] }}">
+		                            </div>
+								</div>
+								<div class="form-group">
+							  		<label for="gender">Gender</label>
+									<select class="form-control" name="gender" required>
+										<option value="">- Select -</option>
+										<option value="M" {{ 'selected' if member['gender'] == 'M' }}>Male</option>
+										<option value="F" {{ 'selected' if member['gender'] == 'F' }}>Female</option>
+								  	</select>
+								</div>
+								<div class="form-group">
+									<label for="email">Email Address</label>
+									<input type="email" class="form-control" name="email" value="{{ member['email'] }}" placeholder="Ex: pdelacruz@yahoo.com">
+								</div>
+							</div>
+
+							<div role="tabpanel" class="tab-pane" id="profile">
+								<div class="form-group">
+							  		<label for="gender">Classification</label>
+
+								</div>
+								<div class="form-group">
+									<label for="cell_leader_id">Cell Leader</label>
+									<input type="text" class="form-control" name="cell_leader_id" value="{{ member['cell_leader_id'] }}">
+								</div>
+							</div>
+
+							<div role="tabpanel" class="tab-pane" id="user_acct">
+								<div class="form-group">
+									<label for="username">Username</label>
+									<input type="text" class="form-control" name="username" required value="{{ member['username'] }}" placeholder="Ex: pdelacruz">
+								</div>
+							</div>
 						</div>
-						<div class="form-group">
-							<label for="firstname">First Name</label>
-							<input type="text" class="form-control" name="firstname" required minlength="2">
-						</div>
-						<div class="form-group">
-							<label for="middlename">Middle Name</label>
-							<input type="text" class="form-control" name="middlename">
-						</div>
-						<div class="form-group">
-                            <label for="birthdate">Birth Date</label>
-                            <div class="input-group date">
-                                <input type="text" class="form-control" name="birthdate" id="txt_birthdate" placeholder="mm/dd/yyyy" required>
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>
-						</div>
-						<div class="form-group">
-					  		<label for="gender">Gender</label>
-						  	<select class="form-control" name="gender" required>
-								<option value="">- Choose -</option>
-								<option value="M">Male</option>
-								<option value="F">Female</option>
-						  	</select>
-						</div>
-						<div class="form-group">
-							<label for="email">Email Address</label>
-							<input type="email" class="form-control" name="email">
-						</div>
-						<div class="form-group">
-							<label for="cell_leader_id">Cell Leader</label>
-							<input type="text" class="form-control" name="cell_leader_id">
-						</div>
+
+						{% if entry_mode == 'add' %}
+						<hr>
                         <div class="form-group">
-							<label><input type="checkbox" id="cbx_add_another"> Create another entry after this one</label>
+							<label><input type="checkbox" id="cbx_add_another" data-toggle="toggle"> &nbsp; Create another entry after this one</label>
 						</div>
+						{% endif %}
 						<div class="text-left">
 							<hr>
 							<button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Submit</button>
@@ -75,13 +115,11 @@
 {% endblock %}
 
 {% block footer %}
-<script src="{{ url_for('static', filename='js/jquery.noty.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/jquery.validate.min.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script>
 $(function() {
-    var $form = $("#form_member_info");
-    $form.find('input[type="text"], textarea').first().focus();
+    var $form = $('#form_member_info');
 
 	$('#bt_cancel').click(function() {
 		window.location = "{{ url_for('.index') }}";
@@ -93,30 +131,24 @@ $(function() {
 		todayHighlight: true
 	});
 
+	//- SUBMIT
     $form.validate({
-        // rules: {
-        //     vmsisdn: {
-        //         remote: {
-        //             url: "",
-        //             type: "post"
-        //         }
-        //     },
-        //     homezone: {
-        //         digits: true
-        //     },
-        // },
-        // onkeyup: false,
-        // messages: {
-        //     vmsisdn: {
-        //         remote: "The value entered already exists. Try a different value."
-        //     }
-		// },
+		ignore: 'input[type=hidden], .ignore',
+		errorPlacement: function(error, element) {
+            error.appendTo( element.parents('div.form-group') );
+        },
+        onkeyup: false,
+        rules: {
+			username: {
+				minlength: 6
+			}
+        },
         submitHandler: function(form) {
             var serialized = $form.serialize();
-            toggle_form_fields(true);
+            toggle_loader(true);
             $.post($form.attr('action'), serialized, function(data) {
                 if(data.status == 'ok') {
-                    exec_noty('Save Successful!', 'success');
+                    toastr['success']("Save Successful!");
 
                     {% if request.edit_mode == 'new_entry' %}
                     if ($('#cbx_add_another').is(":checked")) {
@@ -129,41 +161,31 @@ $(function() {
                     {% endif %}
                 }
                 else {
-                    exec_noty('Saving failed. '+data.message, 'error');
+					toastr['error'](data.message, "Saving failed.");
                 }
             })
             .always(function() {
-                toggle_form_fields(false);
+                toggle_loader(false);
                 $('form').find('input:visible:enabled:first').focus();
                 return false;
             });
         }
     });
 
-    function exec_noty(text, type) {
-        noty({
-            text        : text,
-            type        : type,
-            dismissQueue: true,
-            layout      : 'top',
-            timeout     : 2000,
-        });
-    }
 
-    function toggle_form_fields(disabled_val) {
-        animate_submit_button($form.find('button[type="submit"]'), disabled_val);
-        $form.find('input').prop('disabled', disabled_val);
-    }
+	{% if entry_mode == 'add' %}
 
-    function animate_submit_button(btn, state) {
-        if (state) {
-            btn.children().addClass('fa-spin');
-            btn.contents().last().replaceWith(" Processing");
-        } else {
-            btn.children().removeClass('fa-spin');
-            btn.contents().last().replaceWith(" Submit");
-        }
-    }
+	{% else %} //- {# edit #}
+		//- set all fields readonly
+		$form.find('input, textarea, select').prop('disabled', true);
+	{% endif %}
+
+
 });
 </script>
 {% endblock %}
+
+{#
+TODO
+- show 'back to top' when the window is in the bottom part of page
+#}

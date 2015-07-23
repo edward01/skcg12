@@ -42,10 +42,15 @@ $(document).ready(function () {
 
 
     function switchTheme(themeName) {
+        // if (themeName == 'classic') {
+        //     $('#bs-css').attr('href', '../static/plugins/bootstrap/dist/css/bootstrap.min.css');
+        // } else {
+        //     $('#bs-css').attr('href', '../static/css/bootstrap-' + themeName + '.min.css');
+        // }
         if (themeName == 'classic') {
-            $('#bs-css').attr('href', '../static/plugins/bootstrap/dist/css/bootstrap.min.css');
+            $('#bs-css').attr('href', Flask.url_for("static", {"filename": "plugins/bootstrap/dist/css/bootstrap.min.css"}));
         } else {
-            $('#bs-css').attr('href', '../static/css/bootstrap-' + themeName + '.min.css');
+            $('#bs-css').attr('href', Flask.url_for("static", {"filename": 'css/bootstrap-' + themeName + '.min.css'}));
         }
 
         $('#themes i').removeClass('glyphicon glyphicon-ok whitespace').addClass('whitespace');

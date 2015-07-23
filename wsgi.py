@@ -35,6 +35,7 @@ from utils import check_hash
 from pprint import pprint
 # from flaskext.mysql import MySQL
 from mysql import MySQL
+from flask_jsglue import JSGlue
 
 from dashboard import dashboard_app
 from members import members_app
@@ -54,6 +55,9 @@ app.reloader = DEBUG
 app.mysql = MySQL()
 app.config.update(MYSQL_CONFIG)
 app.mysql.init_app(app)
+
+# JSGlue
+app.jsglue = JSGlue(app)
 
 
 # Blueprints...
@@ -111,7 +115,7 @@ def login_submit():
     password = request.form.get('password', '')
 
     cursor = app.mysql.connect().cursor()
-    
+
     cursor.execute('SELECT * from users where username = %s and password = SHA1(%s)', (username, password))
 
     data = cursor.fetchone()

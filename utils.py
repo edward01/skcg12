@@ -33,8 +33,10 @@ def generate_random_password():
      return ''.join(str)
 
 
-def convert_date_to_string(arg):
-	pass
+def convert_string_to_date(input_val):
+	return datetime.strptime(input_val, '%m/%d/%Y')
+def convert_date_to_string(input_val):
+	return input_val.strftime('%m/%d/%Y')
 
 
 def cint(sVal):

@@ -67,7 +67,8 @@ $(function() {
             {
         		'data': '_id',
         		'render': function(data, type, row) {
-        			return '<a href="#">'+ row['member_name'] +'</a>'
+                    var url = "{{ url_for('.add_edit', member_id='member_id_val') }}".replace('member_id_val', row['_id']);
+        			return '<a href='+url+'>'+ row['member_name'] +'</a>'
                 }
     		},
             {'data': 'birthdate'},

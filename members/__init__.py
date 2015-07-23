@@ -5,7 +5,9 @@ from flask import Blueprint, session, render_template, url_for, request, redirec
 from datetime import datetime
 from pprint import pprint
 import os
-import utils
+from utils import convert_string_to_date, convert_date_to_string, generate_random_password, cint
+import random
+import time  # used for sleep() only
 
 members_app = Blueprint('members', __name__, url_prefix='/members')
 
@@ -58,7 +60,7 @@ def list_members():
 	members = list(cursor.fetchall())
 	cursor.close()
 
-	pprint(members)
+	# pprint(members)
 
 	# for member in members:
 	# 	vn['vnstatus'] = search_vnstatus(vn['vnstatus'])
@@ -75,16 +77,26 @@ def list_members():
 	return jsonify(members_dt)
 
 
-@members_app.route('/add-edit', methods=['GET'])
-@members_app.route('/add-edit/<int:member_id>', methods=['GET'])
+@members_app.route('/details', methods=['GET'])
+@members_app.route('/details/<string:member_id>', methods=['GET'])
 def add_edit(member_id=None):
 	if member_id is None:
 		#- New Entry Mode
+		entry_mode = 'add'
 		member = {}
+		user_acct = {}
 	else:
 		#- Edit Mode
-		member = {}
-	return render_template('members/add_edit.html', member=member)
+		entry_mode = 'edit'
+		cursor = app.mysql.get_db().cursor()
+		cursor.execute("SELECT * FROM members WHERE _id=%s" % member_id)
+		member = cursor.fetchone()
+		cursor.execute("SELECT * FROM users WHERE member_id=%s" % member_id)
+		user_acct = cursor.fetchone()
+		cursor.close()
+
+		member['birthdate'] = convert_date_to_string(member['birthdate'])
+	return render_template('members/add_edit.html', member=member, user_acct=user_acct, entry_mode=entry_mode)
 
 
 @members_app.route('/add-edit-post', methods=['POST'])
@@ -97,6 +109,8 @@ def add_edit_post():
 	birthdate = request.form.get('birthdate', '')
 	gender = request.form.get('gender', '')
 	cell_leader_id = utils.cint(request.form.get('cell_leader_id', ''))
+	username = request.form.get('username', '')
+	# time.sleep(5)
 
 	try:
 		sql_conn = app.mysql.get_db()
@@ -111,7 +125,16 @@ def add_edit_post():
 				"INSERT INTO members (lastname, firstname, middlename, email, birthdate, gender, cell_leader_id) "
 				"VALUES (%s, %s, %s, %s, %s, %s, %s) "
 			)
-			insert_data = (lastname, firstname, middlename, email, string_to_date_obj(birthdate), gender, int(cell_leader_id))
+			insert_data = (lastname, firstname, middlename, email, convert_string_to_date(birthdate), gender, int(cell_leader_id))
+			cursor.execute(insert_stmt, insert_data)
+
+			#- users table
+			member_id = cursor.lastrowid
+			insert_stmt = (
+				"INSERT INTO users (username, password, member_id) "
+				"VALUES (%s, %s, %s) "
+			)
+			insert_data = (username, generate_random_password(), member_id)
 			cursor.execute(insert_stmt, insert_data)
 
 		sql_conn.commit()
@@ -124,8 +147,13 @@ def add_edit_post():
 		cursor.close()
 
 
-def string_to_date_obj(input_val):
-	return datetime.strptime(input_val, '%m/%d/%Y')
+# Random password generator for activation
+def generate_random_password():
+     str = []
+     chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+     for k in range(0, 8):
+          str.append(random.choice(chars))
+     return ''.join(str)
 
 
 # @bp_app.route('/add', methods=['POST'])

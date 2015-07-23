@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {{ JSGlue.include() }}
     <meta charset="utf-8">
     <title>{% block title %}{% endblock %} :: {{ config.APP_TITLE }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,6 +24,8 @@
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.iphone.toggle.css') }}"> -->
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/uploadify.css') }}"> -->
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/toastr/toastr.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-toggle/bootstrap-toggle.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='plugins/common_files/utils.css') }}">
     <!-- jQuery -->
     <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
@@ -34,7 +37,7 @@
     <!-- The fav icon -->
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/%s' % config.FAV_ICON) }}">
     <style>
-        a.navbar-brand { margin-left: 10px; }
+        /*a.navbar-brand { width: 300px; }*/
     </style>
 
     {% block head %}{% endblock %}
@@ -51,9 +54,8 @@
             <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="index.html">
-                <!-- <img alt="Church Logo" src="../static/img/church_logo.png" /> -->
-                <!-- <img alt="Charisma Logo" src="../static/img/logo20.png" class="hidden-xs"/> -->
-                <!-- <img alt="Charisma Logo" src="../static/img/logo20.png"/> -->
+                <!-- <img alt="Charisma Logo" src="{{ url_for('static', filename='img/logo.png') }}" class="hidden-xs"/> -->
+                <img class="hidden-xs" src="{{ url_for('static', filename='img/logo.png') }}" alt="Church Logo">
                 <span>Name Here</span>
             </a>
             <!-- user dropdown starts -->
@@ -217,6 +219,17 @@
     </div>
 
 
+    <div class="modal fade" id="div_loader" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img src="{{ url_for('static', filename='img/ajax-loaders/ajax-loader-4.gif') }}" /> &nbsp; Processing, please wait...
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 <!-- external javascript -->
 <script src="{{ url_for('static', filename='plugins/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <!-- library for cookie management -->
@@ -248,21 +261,19 @@
 <!-- <script src="{{ url_for('static', filename='js/jquery.history.js') }}"></script> -->
 <!-- application script for Charisma demo -->
 
-{% block footer %}{% endblock %}
 <script src="{{ url_for('static', filename='js/charisma.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/toastr/toastr.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/common_files/utils.js') }}"></script>
+{% block footer %}{% endblock %}
 <script>
 $(function() {
-    //- Alert Message
-    //- types: [Alert, Success, Error, Warning, Information, Confirm]
+    //- Toastr Message
+    //- types: [success, info, warning, error]
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                noty({
-                    "text": "{{ message }}",
-                    "layout": "top",
-                    "type": "{{ category }}"
-                });
+                toastr["{{ category }}"]("{{ message }}");
             {% endfor %}
         {% endif %}
     {% endwith %}
