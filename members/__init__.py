@@ -5,7 +5,7 @@ from flask import Blueprint, session, render_template, url_for, request, redirec
 # from datetime import datetime
 from pprint import pprint
 import os
-from utils import convert_string_to_date, convert_date_to_string, generate_random_password, cint
+from utils import convert_string_to_date, convert_date_to_string, generate_random_password, cint, convert_date_to_string_custom
 import random
 import time  # used for sleep() only
 
@@ -61,9 +61,8 @@ def list_members():
 	cursor.close()
 
 	# pprint(members)
-
-	# for member in members:
-	# 	vn['vnstatus'] = search_vnstatus(vn['vnstatus'])
+	for member in members:
+		member['birthdate'] = convert_date_to_string_custom(member['birthdate'], '%Y-%m-%d')
 	# 	vn['allocation_date'] = format_date_value(vn['allocation_date'])
 	# 	vn['availability_date'] = format_date_value(vn['availability_date'])
 	# 	vn['quarantined_date'] = format_date_value(vn['quarantined_date'])

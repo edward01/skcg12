@@ -37,6 +37,8 @@ def convert_string_to_date(input_val):
 	return datetime.strptime(input_val, '%m/%d/%Y')
 def convert_date_to_string(input_val):
 	return input_val.strftime('%m/%d/%Y')
+def convert_date_to_string_custom(input_val, format='%m/%d/%Y'):
+	return input_val.strftime(format)
 
 
 def cint(sVal):
