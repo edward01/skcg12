@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {{ JSGlue.include() }}
     <meta charset="utf-8">
     <title>{{ config.APP_TITLE }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,19 +11,22 @@
     <!-- The styles -->
     <link id="bs-css" rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-cerulean.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/charisma-app.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fullcalendar/dist/fullcalendar.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fullcalendar/dist/fullcalendar.print.css') }}" media="print">
-    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/chosen/chosen.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/colorbox/example3/colorbox.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/responsive-tables/responsive-tables.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-tour/build/css/bootstrap-tour.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.noty.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/noty_theme_default.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/elfinder.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/elfinder.theme.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.iphone.toggle.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/uploadify.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fullcalendar/dist/fullcalendar.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fullcalendar/dist/fullcalendar.print.css') }}" media="print"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='plugins/chosen/chosen.min.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='plugins/colorbox/example3/colorbox.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='plugins/responsive-tables/responsive-tables.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-tour/build/css/bootstrap-tour.min.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.noty.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/noty_theme_default.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/elfinder.min.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/elfinder.theme.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.iphone.toggle.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/uploadify.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/toastr/toastr.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-toggle/bootstrap-toggle.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/common_files/utils.css') }}">
     <!-- jQuery -->
     <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
     <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -104,31 +108,35 @@
 <!-- library for cookie management -->
 <script src="{{ url_for('static', filename='js/jquery.cookie.js') }}"></script>
 <!-- calender plugin -->
-<script src="{{ url_for('static', filename='plugins/moment/min/moment.min.js') }}"></script>
-<script src="{{ url_for('static', filename='plugins/fullcalendar/dist/fullcalendar.min.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='plugins/moment/min/moment.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/fullcalendar/dist/fullcalendar.min.js') }}"></script> -->
 <!-- data table plugin -->
-<script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script> -->
 <!-- select or dropdown enhancer -->
 <script src="{{ url_for('static', filename='plugins/chosen/chosen.jquery.min.js') }}"></script>
 <!-- plugin for gallery image view -->
-<script src="{{ url_for('static', filename='plugins/colorbox/jquery.colorbox-min.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='plugins/colorbox/jquery.colorbox-min.js') }}"></script> -->
 <!-- notification plugin -->
-<script src="{{ url_for('static', filename='js/jquery.noty.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='js/jquery.noty.js') }}"></script> -->
 <!-- library for making tables responsive -->
-<script src="{{ url_for('static', filename='plugins/responsive-tables/responsive-tables.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='plugins/responsive-tables/responsive-tables.js') }}"></script> -->
 <!-- tour plugin -->
-<script src="{{ url_for('static', filename='plugins/bootstrap-tour/build/js/bootstrap-tour.min.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='plugins/bootstrap-tour/build/js/bootstrap-tour.min.js') }}"></script> -->
 <!-- star rating plugin -->
-<script src="{{ url_for('static', filename='js/jquery.raty.min.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='js/jquery.raty.min.js') }}"></script> -->
 <!-- for iOS style toggle switch -->
-<script src="{{ url_for('static', filename='js/jquery.iphone.toggle.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='js/jquery.iphone.toggle.js') }}"></script> -->
 <!-- autogrowing textarea plugin -->
-<script src="{{ url_for('static', filename='js/jquery.autogrow-textarea.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='js/jquery.autogrow-textarea.js') }}"></script> -->
 <!-- multiple file upload plugin -->
-<script src="{{ url_for('static', filename='js/jquery.uploadify-3.1.min.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='js/jquery.uploadify-3.1.min.js') }}"></script> -->
 <!-- history.js for cross-browser state change on ajax -->
-<script src="{{ url_for('static', filename='js/jquery.history.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='js/jquery.history.js') }}"></script> -->
 <!-- application script for Charisma demo -->
+
 <script src="{{ url_for('static', filename='js/charisma.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/toastr/toastr.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='plugins/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script> -->
+<script src="{{ url_for('static', filename='plugins/common_files/utils.js') }}"></script>
 </body>
 </html>

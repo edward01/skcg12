@@ -7,3 +7,25 @@ label.error {
 	color: red;
 	font-weight: normal;
 }
+
+/* scroll up feature */
+a.scrollup {
+	background: rgba(0, 0, 0, 0.75) none repeat scroll 0 0;
+    border-radius: 3px;
+    bottom: 20px;
+    cursor: pointer;
+    display: none;
+    font-size: 16px;
+    height: 45px;
+    line-height: 45px;
+    position: fixed;
+    right: 30px;
+    text-align: center;
+    width: 45px;
+    z-index: 9999;
+	color: #fff;
+}
+a.scrollup:hover {
+	background: #428bca none repeat scroll 0 0;
+    text-decoration: none;
+}

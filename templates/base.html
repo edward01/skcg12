@@ -26,6 +26,7 @@
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}"> -->
     <link rel="stylesheet" href="{{ url_for('static', filename='plugins/toastr/toastr.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-toggle/bootstrap-toggle.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/sweetalert/sweetalert.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='plugins/common_files/utils.css') }}">
     <!-- jQuery -->
     <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
@@ -129,6 +130,7 @@
                             <li {% if active_page == 'dashboard' %}class="active"{% endif %}><a class="ajax-link" href="{{ url_for('dashboard.index') }}"><i class="glyphicon glyphicon-home"></i><span> Dashboard</span></a></li>
                             <li {% if active_page == 'members' %}class="active"{% endif %}><a class="ajax-link" href="{{ url_for('members.index') }}"><i class="glyphicon glyphicon-list-alt"></i><span> Members</span></a></li>
                             <li {% if active_page == 'reports' %}class="active"{% endif %}><a class="ajax-link" href="{{ url_for('reports.index') }}"><i class="glyphicon glyphicon-print"></i><span> Reports</span></a></li>
+                            <li {% if active_page == 'setup' %}class="active"{% endif %}><a class="ajax-link" href="{{ url_for('setup.index') }}"><i class="glyphicon glyphicon-cog"></i><span> Data Setup</span></a></li>
                             <!-- <li><a class="ajax-link" href="ui.html"><i class="glyphicon glyphicon-eye-open"></i><span> UI Features</span></a></li>
                                 <li><a class="ajax-link" href="form.html"><i
                                             class="glyphicon glyphicon-edit"></i><span> Forms</span></a></li>
@@ -179,11 +181,11 @@
                 <div>
                     <ul class="breadcrumb">
                         <li>
-                            <a href="/{{ active_page }}">{{ active_page|capitalize }}</a>
+                            <a href="/{{ active_page }}">{{ active_page|title }}</a>
                         </li>
                         {% if sub_active_page %}
                         <li>
-                            <a href="#">{{ sub_active_page|capitalize }}</a>
+                            <a href="#">{{ sub_active_page|title }}</a>
                         </li>
                         {% endif %}
                     </ul>
@@ -215,6 +217,7 @@
         </div>
         <footer class="row">
             <p class="col-md-12 copyright" style="text-align: center;">&copy; This is Footer - 2014</p>
+            <a href="#" class="scrollup" title="Back to Top"><i class="glyphicon glyphicon-chevron-up"></i></a>
         </footer>
     </div>
 
@@ -264,6 +267,7 @@
 <script src="{{ url_for('static', filename='js/charisma.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/toastr/toastr.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/sweetalert/sweetalert.min.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/common_files/utils.js') }}"></script>
 {% block footer %}{% endblock %}
 <script>

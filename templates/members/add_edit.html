@@ -21,6 +21,10 @@
 		<div class="box-inner">
 			<div class="box-header well">
 				<h2><i class="glyphicon glyphicon-user"></i> {{ entry_mode|capitalize }} Member</h2>
+				{% if entry_mode == 'edit' %}
+				&nbsp;&nbsp;
+                <a class="btn btn-success btn-xs" href="javascript:;" id="gbt_modify_entry"><i class="glyphicon glyphicon-pencil"></i> Modify</a>
+                {% endif %}
 			</div>
 			<div class="box-content row">
 				<div class="col-md-12">
@@ -79,7 +83,7 @@
 							<div role="tabpanel" class="tab-pane" id="profile">
 								<div class="form-group">
 							  		<label for="gender">Classification</label>
-
+									<input type="text" class="form-control" name="classification" value="{{ member['classification'] }}">
 								</div>
 								<div class="form-group">
 									<label for="cell_leader_id">Cell Leader</label>
@@ -90,8 +94,25 @@
 							<div role="tabpanel" class="tab-pane" id="user_acct">
 								<div class="form-group">
 									<label for="username">Username</label>
-									<input type="text" class="form-control" name="username" required value="{{ member['username'] }}" placeholder="Ex: pdelacruz">
+									{% if entry_mode == 'add' %}
+										<input type="text" class="form-control" name="username" required placeholder="Ex: pdelacruz">
+									{% else %}
+										<div class="panel panel-default">
+											<div class="panel-heading">{{ user_acct['username'] }}</div>
+										</div>
+									{% endif %}
 								</div>
+								{% if entry_mode == 'edit' %}
+								<div class="form-group" style="display: none;" id="div_new_pwd">
+									<label for="username">New Password</label>
+									<div class="panel panel-default">
+										<div class="panel-heading"></div>
+									</div>
+								</div>
+								<div class="form-group">
+									<button type="button" class="btn btn-danger" id="bt_generate_pwd"><i class="glyphicon glyphicon-refresh"></i> Generate New Password</button>
+								</div>
+								{% endif %}
 							</div>
 						</div>
 
@@ -101,7 +122,7 @@
 							<label><input type="checkbox" id="cbx_add_another" data-toggle="toggle"> &nbsp; Create another entry after this one</label>
 						</div>
 						{% endif %}
-						<div class="text-left">
+						<div class="text-left page_buttons {% if entry_mode == 'edit' %}hide{% endif %}">
 							<hr>
 							<button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Submit</button>
 							<button type="button" class="btn btn-default" id="bt_cancel">Cancel</button>
@@ -121,10 +142,6 @@
 $(function() {
     var $form = $('#form_member_info');
 
-	$('#bt_cancel').click(function() {
-		window.location = "{{ url_for('.index') }}";
-	});
-
 	$('#txt_birthdate').datepicker({
 		todayBtn: "linked",
 		autoclose: true,
@@ -140,8 +157,14 @@ $(function() {
         onkeyup: false,
         rules: {
 			username: {
-				minlength: 6
+				minlength: 5
 			}
+        },
+		invalidHandler: function(event, validator) {
+            var errors = validator.numberOfInvalids();
+            if (errors) {
+                toastr["error"]('This tab or the other tabs still needs your attention.', 'Invalid entries found.');
+            }
         },
         submitHandler: function(form) {
             var serialized = $form.serialize();
@@ -150,13 +173,19 @@ $(function() {
                 if(data.status == 'ok') {
                     toastr['success']("Save Successful!");
 
-                    {% if request.edit_mode == 'new_entry' %}
+                    {% if entry_mode == 'add' %}
                     if ($('#cbx_add_another').is(":checked")) {
                         $form.find('input').val('');  //- clear the fields for another creation of entry
+						$('a[href="#primary"]').click();
+						showAlert("Member password is:", data.new_pwd, function() {
+							setFocus();
+						});
                     }
                     else {
-                        var edit_url = "";
-                        // load_vn_details(edit_url);
+						showAlert("Member password is:", data.new_pwd, function() {
+							var edit_url = "{{ url_for('.add_edit', member_id='member_id_val') }}".replace('member_id_val', data.member_id);
+							window.location = edit_url;
+						});
                     }
                     {% endif %}
                 }
@@ -166,7 +195,7 @@ $(function() {
             })
             .always(function() {
                 toggle_loader(false);
-                $('form').find('input:visible:enabled:first').focus();
+                setFocus();
                 return false;
             });
         }
@@ -174,11 +203,51 @@ $(function() {
 
 
 	{% if entry_mode == 'add' %}
-
+		$('#bt_cancel').click(function(event) {
+			window.location = "{{ url_for('.index') }}";
+		});
 	{% else %} //- {# edit #}
 		//- set all fields readonly
-		$form.find('input, textarea, select').prop('disabled', true);
+		disable_fields(true);
+		//- toggle readonly attribute to fields
+		$('a#gbt_modify_entry').click(function(event) {
+			$(this).addClass('hide');
+			$('div.page_buttons').removeClass('hide');
+			disable_fields(false);
+			setFocus();
+		});
+		$('#bt_cancel').click(function(event) {
+			$('a#gbt_modify_entry').removeClass('hide');
+			$('div.page_buttons').addClass('hide');
+			disable_fields(true);
+		});
+
+		$('#bt_generate_pwd').click(function(event) {
+			showConfirm('Are you sure?', 'This will overwrite the password of the member.', function() {
+				toggle_loader(true);
+				var jqxhr = $.post( "{{ url_for('.password_reset') }}", {id: "{{ user_acct['userid'] }}"}, function(data) {
+						if(data.status == 'ok') {
+		                    toastr['success']("Password has been updated!");
+							$('#div_new_pwd').show().find('div.panel-heading').html(data.new_pwd);
+		                }
+		                else {
+							toastr['error'](data.message, "Process failed.");
+		                }
+					})
+					.fail(function() {
+						toastr['error']("Please try again later.", "Process failed.");
+					})
+					.always(function() {
+						toggle_loader(false);
+					});
+			});
+		});
 	{% endif %}
+
+
+	function disable_fields(disabled) {
+		$form.find('input, textarea, select').prop('disabled', disabled);
+	}
 
 
 });
@@ -187,5 +256,7 @@ $(function() {
 
 {#
 TODO
-- show 'back to top' when the window is in the bottom part of page
+- additional fields; date baptised, spiritual bday, ministries
+- photo upload
+- 
 #}

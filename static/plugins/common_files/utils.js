@@ -22,13 +22,40 @@ function toggle_loader(show_loader) {
 	}
 }
 
+//- sweet alert popups
+function showConfirm(title, text, callback_func) {
+	swal({
+		title: title,
+		text: text,
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#d9534f",
+		confirmButtonText: "Yes",
+		cancelButtonText: "No"
+	}, function(){
+		callback_func()
+	});
+}
+function showAlert(title, text, callback_func) {
+	swal({
+		title: title,
+		text: text,
+		type: "info"
+	}, function(){
+		callback_func()
+	});
+}
+
+function setFocus() {
+	$('form').find('input[type="text"], textarea').first().focus();
+}
 
 //-----------------
 //-- MAIN
 //-----------------
 $(function() {
 	//- sets focus
-    $('form').find('input[type="text"], textarea').first().focus();
+	setFocus();
 
 	//- toastr settings
 	toastr.options = {
@@ -38,8 +65,23 @@ $(function() {
 
 	//- sweet alert settings
 
+
 	//- bootstrap toggle (checkbox) settings
 
+	//- scroll up feature
+	//- http://answers.squarespace.com/questions/6003/how-can-i-add-a-scroll-to-top-button
+	$(window).scroll(function () {
+        if ($(this).scrollTop() > 100) {
+            $('.scrollup').fadeIn();
+        } else {
+            $('.scrollup').fadeOut();
+        }
+    });
+    $('.scrollup').click(function () {
+        $("html, body").animate({
+            scrollTop: 0
+        }, 'fast');
+        return false;
+    });
 
-	
 });

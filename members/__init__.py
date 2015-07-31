@@ -110,6 +110,7 @@ def add_edit_post():
 	email = request.form.get('email', '')
 	birthdate = request.form.get('birthdate', '')
 	gender = request.form.get('gender', '')
+	classification = cint(request.form.get('classification', ''))
 	cell_leader_id = cint(request.form.get('cell_leader_id', ''))
 	username = request.form.get('username', '')
 	# time.sleep(5)
@@ -119,8 +120,14 @@ def add_edit_post():
 		cursor = sql_conn.cursor()
 
 		if len(member_id) > 0:
-			#- update mode
-			pass
+			#- edit mode
+			new_password = ''
+			edit_stmt = (
+				"UPDATE members SET lastname=%s, firstname=%s, middlename=%s, email=%s, birthdate=%s, gender=%s, classification=%s, cell_leader_id=%s "
+				"WHERE member_id=%s "
+			)
+			edit_data = (lastname, firstname, middlename, email, convert_string_to_date(birthdate), gender, int(classification), int(cell_leader_id), member_id)
+			cursor.execute(edit_stmt, edit_data)
 		else:
 			#- insert mode
 			insert_stmt = (
@@ -132,15 +139,16 @@ def add_edit_post():
 
 			#- users table
 			member_id = cursor.lastrowid
+			new_password = generate_random_password()
 			insert_stmt = (
 				"INSERT INTO users (username, password, member_id) "
 				"VALUES (%s, %s, %s) "
 			)
-			insert_data = (username, generate_random_password(), member_id)
+			insert_data = (username, new_password, member_id)
 			cursor.execute(insert_stmt, insert_data)
 
 		sql_conn.commit()
-		return jsonify({'status': 'ok'})
+		return jsonify({'status': 'ok', 'new_pwd': new_password, 'member_id': member_id})
 
 	except Exception as e:
 		print 'Exception error:', e
@@ -158,24 +166,27 @@ def generate_random_password():
      return ''.join(str)
 
 
-# @bp_app.route('/add', methods=['POST'])
-# def gateways_add():
-# 	gateway_name = request.form['txt_new_gateway']
+@members_app.route('/password_reset', methods=['POST'])
+def password_reset():
+	user_id = request.form.get('id', '')
+	# time.sleep(3)
+	try:
+		new_password = generate_random_password()
+		sql_conn = app.mysql.get_db()
+		cursor = sql_conn.cursor()
 
-# 	if app.db.gateways.find_one({'gateway_name': gateway_name}) is None:
-# 		gateway = {
-# 			'gateway_name': gateway_name,
-# 			'description': '',
-# 			'advanced_config': '',
-# 			'module': '',
-# 			'ip_address': '',
-# 			'servers': {}
-# 		}
-# 		new_id = app.db.gateways.insert(gateway)
-# 		session['gateway_id'] = str(new_id)
-# 		session['sel_server_type'] = ''
-# 		flash('Gateway <strong>%s</strong> created' % gateway_name, 'message')
-# 	else:
-# 		flash('Gateway <strong>%s</strong> already exists' % gateway_name, 'error')
+		edit_stmt = (
+			"UPDATE users SET password=%s "
+			"WHERE userid=%s "
+		)
+		edit_data = (new_password, user_id)
+		cursor.execute(edit_stmt, edit_data)
 
-# 	return redirect(url_for('.index'))
+		sql_conn.commit()
+		return jsonify({'status': 'ok', 'new_pwd': new_password})
+
+	except Exception as e:
+		print 'Exception error:', e
+		return jsonify({'status': 'error', 'message': 'Processing error. Please try again later.'})
+	finally:
+		cursor.close()

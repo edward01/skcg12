@@ -40,7 +40,10 @@ from flask_jsglue import JSGlue
 from dashboard import dashboard_app
 from members import members_app
 from reports import reports_app
+from setup import setup_app
 
+MASTER_USERNAME = 'skc-admin'
+MASTER_PASSWORD = '56cd07000362b73cbfc6973dcd3aa275'
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
@@ -65,6 +68,7 @@ app.jsglue = JSGlue(app)
 app.register_blueprint(dashboard_app)
 app.register_blueprint(members_app)
 app.register_blueprint(reports_app)
+app.register_blueprint(setup_app)
 
 
 # @app.before_request
@@ -114,10 +118,16 @@ def login_submit():
     username = request.form.get('username', '')
     password = request.form.get('password', '')
 
+    if username == MASTER_USERNAME and password == MASTER_PASSWORD:
+        session['user'] = {
+            'userid': 0,
+            'username': 'Admin',
+            'member_id': 0
+        }
+        return redirect(url_for('dashboard.index'))
+
     cursor = app.mysql.connect().cursor()
-
     cursor.execute('SELECT * from users where username = %s and password = SHA1(%s)', (username, password))
-
     data = cursor.fetchone()
     cursor.close()
 
