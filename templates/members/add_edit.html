@@ -22,8 +22,7 @@
 			<div class="box-header well">
 				<h2><i class="glyphicon glyphicon-user"></i> {{ entry_mode|capitalize }} Member</h2>
 				{% if entry_mode == 'edit' %}
-				&nbsp;&nbsp;
-                <a class="btn btn-success btn-xs" href="javascript:;" id="gbt_modify_entry"><i class="glyphicon glyphicon-pencil"></i> Modify</a>
+				<a class="btn btn-success btn-xs" href="javascript:;" id="gbt_modify_entry" style="float:right;"><i class="glyphicon glyphicon-pencil"></i> Modify</a>
                 {% endif %}
 			</div>
 			<div class="box-content row">
@@ -220,7 +219,7 @@ $(function() {
             })
             .always(function() {
                 toggle_loader(false);
-                setFocus();
+                // setFocus();
                 return false;
             });
         }
