@@ -49,6 +49,19 @@ function showAlert(title, text, callback_func) {
 function setFocus() {
 	$('form').find('input[type="text"], textarea').first().focus();
 }
+// function disable_fields(disabled) {
+// 	$form.find('input, textarea, select').prop('disabled', disabled);
+// 	$("html, body").animate({
+// 		scrollTop: 0
+// 	}, 'fast');
+// }
+
+function gotoTop() {
+	$("html, body").animate({
+		scrollTop: 0
+	}, 'fast');
+}
+
 
 //-----------------
 //-- MAIN
@@ -78,9 +91,7 @@ $(function() {
         }
     });
     $('.scrollup').click(function () {
-        $("html, body").animate({
-            scrollTop: 0
-        }, 'fast');
+        gotoTop();
         return false;
     });
 

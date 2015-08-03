@@ -214,7 +214,10 @@ $(function() {
 			$(this).addClass('hide');
 			$('div.page_buttons').removeClass('hide');
 			disable_fields(false);
-			setFocus();
+			// setFocus();
+			$('html, body').animate({
+			   scrollTop: $('input[name="lastname"]').offset().top
+		   	}, 'fast');
 		});
 		$('#bt_cancel').click(function(event) {
 			$('a#gbt_modify_entry').removeClass('hide');
@@ -247,6 +250,7 @@ $(function() {
 
 	function disable_fields(disabled) {
 		$form.find('input, textarea, select').prop('disabled', disabled);
+		gotoTop();
 	}
 
 
@@ -258,5 +262,5 @@ $(function() {
 TODO
 - additional fields; date baptised, spiritual bday, ministries
 - photo upload
-- 
+-
 #}
