@@ -31,90 +31,115 @@
 					<form role="form" id="form_member_info" method="post" action="{{ url_for('.add_edit_post') }}">
 						<input type="hidden" name="_id" value="{{ member['_id'] }}">
 
-						<!-- Nav tabs -->
-						<ul class="nav nav-tabs" role="tablist">
-							<li role="presentation" class="active"><a href="#primary" aria-controls="primary" role="tab" data-toggle="tab">Primary Info</a></li>
-							<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Church Profile</a></li>
-							<li role="presentation"><a href="#user_acct" aria-controls="user_acct" role="tab" data-toggle="tab">User Account</a></li>
-						</ul>
-						<br>
-
-						<!-- Tab panes -->
-						<div class="tab-content">
-							<div role="tabpanel" class="tab-pane active" id="primary">
-								<div class="form-group">
-									<label for="lastname">Photo</label>
-									<br>
-									<img src="{{ url_for('static', filename='img/default_avatar.jpg') }}" alt="Sample Avatar" class="img-thumbnail member-avatar" />
+						<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+							<div class="panel panel-info">
+								<div class="panel-heading" role="tab" id="headingOne">
+									<h3 class="panel-title">
+										<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+							          		<i class="glyphicon glyphicon-star"></i> Primary Info
+								        </a>
+									</h3>
 								</div>
-								<div class="form-group">
-									<label for="lastname">Last Name</label>
-									<input type="text" class="form-control" name="lastname" required minlength="2" value="{{ member['lastname'] }}" placeholder="Ex: Dela Cruz">
-								</div>
-								<div class="form-group">
-									<label for="firstname">First Name</label>
-									<input type="text" class="form-control" name="firstname" required minlength="2" value="{{ member['firstname'] }}" placeholder="Ex: Pedro">
-								</div>
-								<div class="form-group">
-									<label for="middlename">Middle Name</label>
-									<input type="text" class="form-control" name="middlename" value="{{ member['middlename'] }}" placeholder="Ex: Protacio">
-								</div>
-								<div class="form-group">
-		                            <label for="birthdate">Birth Date</label>
-		                            <div class="input-group date">
-		                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-		                                <input type="text" class="form-control" name="birthdate" id="txt_birthdate" placeholder="mm/dd/yyyy" required value="{{ member['birthdate'] }}">
-		                            </div>
-								</div>
-								<div class="form-group">
-							  		<label for="gender">Gender</label>
-									<select class="form-control" name="gender" required>
-										<option value="">- Select -</option>
-										<option value="M" {{ 'selected' if member['gender'] == 'M' }}>Male</option>
-										<option value="F" {{ 'selected' if member['gender'] == 'F' }}>Female</option>
-								  	</select>
-								</div>
-								<div class="form-group">
-									<label for="email">Email Address</label>
-									<input type="email" class="form-control" name="email" value="{{ member['email'] }}" placeholder="Ex: pdelacruz@yahoo.com">
-								</div>
-							</div>
-
-							<div role="tabpanel" class="tab-pane" id="profile">
-								<div class="form-group">
-							  		<label for="gender">Classification</label>
-									<input type="text" class="form-control" name="classification" value="{{ member['classification'] }}">
-								</div>
-								<div class="form-group">
-									<label for="cell_leader_id">Cell Leader</label>
-									<input type="text" class="form-control" name="cell_leader_id" value="{{ member['cell_leader_id'] }}">
-								</div>
-							</div>
-
-							<div role="tabpanel" class="tab-pane" id="user_acct">
-								<div class="form-group">
-									<label for="username">Username</label>
-									{% if entry_mode == 'add' %}
-										<input type="text" class="form-control" name="username" required placeholder="Ex: pdelacruz">
-									{% else %}
-										<div class="panel panel-default">
-											<div class="panel-heading">{{ user_acct['username'] }}</div>
+								<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+									<div class="panel-body">
+										<div class="form-group">
+											<label for="lastname">Photo</label>
+											<br>
+											<img src="{{ url_for('static', filename='img/default_avatar.jpg') }}" alt="Sample Avatar" class="img-thumbnail member-avatar" />
 										</div>
-									{% endif %}
-								</div>
-								{% if entry_mode == 'edit' %}
-								<div class="form-group" style="display: none;" id="div_new_pwd">
-									<label for="username">New Password</label>
-									<div class="panel panel-default">
-										<div class="panel-heading"></div>
+										<div class="form-group">
+											<label for="lastname">Last Name</label>
+											<input type="text" class="form-control" name="lastname" required minlength="2" value="{{ member['lastname'] }}" placeholder="Ex: Dela Cruz">
+										</div>
+										<div class="form-group">
+											<label for="firstname">First Name</label>
+											<input type="text" class="form-control" name="firstname" required minlength="2" value="{{ member['firstname'] }}" placeholder="Ex: Pedro">
+										</div>
+										<div class="form-group">
+											<label for="middlename">Middle Name</label>
+											<input type="text" class="form-control" name="middlename" value="{{ member['middlename'] }}" placeholder="Ex: Protacio">
+										</div>
+										<div class="form-group">
+				                            <label for="birthdate">Birth Date</label>
+				                            <div class="input-group date">
+				                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+				                                <input type="text" class="form-control" name="birthdate" id="txt_birthdate" placeholder="mm/dd/yyyy" required value="{{ member['birthdate'] }}">
+				                            </div>
+										</div>
+										<div class="form-group">
+									  		<label for="gender">Gender</label>
+											<select class="form-control" name="gender" required>
+												<option value="">- Select -</option>
+												<option value="M" {{ 'selected' if member['gender'] == 'M' }}>Male</option>
+												<option value="F" {{ 'selected' if member['gender'] == 'F' }}>Female</option>
+										  	</select>
+										</div>
+										<div class="form-group">
+											<label for="email">Email Address</label>
+											<input type="email" class="form-control" name="email" value="{{ member['email'] }}" placeholder="Ex: pdelacruz@yahoo.com">
+										</div>
 									</div>
 								</div>
-								<div class="form-group">
-									<button type="button" class="btn btn-danger" id="bt_generate_pwd"><i class="glyphicon glyphicon-refresh"></i> Generate New Password</button>
+							</div>
+
+							<div class="panel panel-info">
+								<div class="panel-heading" role="tab" id="headingTwo">
+									<h3 class="panel-title">
+										<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+											<i class="glyphicon glyphicon-plus"></i> Church Profile
+								        </a>
+									</h3>
 								</div>
-								{% endif %}
+								<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+									<div class="panel-body">
+										<div class="form-group">
+									  		<label for="gender">Classification</label>
+											<input type="text" class="form-control" name="classification" value="{{ member['classification'] }}">
+										</div>
+										<div class="form-group">
+											<label for="cell_leader_id">Cell Leader</label>
+											<input type="text" class="form-control" name="cell_leader_id" value="{{ member['cell_leader_id'] }}">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="panel panel-info">
+								<div class="panel-heading" role="tab" id="headingThree">
+									<h3 class="panel-title">
+										<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+											<i class="glyphicon glyphicon-cog"></i> User Account
+								        </a>
+									</h3>
+								</div>
+								<div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+									<div class="panel-body">
+										<div class="form-group">
+											<label for="username">Username</label>
+											{% if entry_mode == 'add' %}
+												<input type="text" class="form-control" name="username" required placeholder="Ex: pdelacruz">
+											{% else %}
+												<div class="panel panel-default">
+													<div class="panel-heading">{{ user_acct['username'] }}</div>
+												</div>
+											{% endif %}
+										</div>
+										{% if entry_mode == 'edit' %}
+										<div class="form-group" style="display: none;" id="div_new_pwd">
+											<label for="username">New Password</label>
+											<div class="panel panel-default">
+												<div class="panel-heading"></div>
+											</div>
+										</div>
+										<div class="form-group">
+											<button type="button" class="btn btn-danger" id="bt_generate_pwd"><i class="glyphicon glyphicon-refresh"></i> Generate New Password</button>
+										</div>
+										{% endif %}
+									</div>
+								</div>
 							</div>
 						</div>
+
 
 						{% if entry_mode == 'add' %}
 						<hr>
