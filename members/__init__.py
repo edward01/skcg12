@@ -124,7 +124,7 @@ def add_edit_post():
 			new_password = ''
 			edit_stmt = (
 				"UPDATE members SET lastname=%s, firstname=%s, middlename=%s, email=%s, birthdate=%s, gender=%s, classification=%s, cell_leader_id=%s "
-				"WHERE member_id=%s "
+				"WHERE _id=%s "
 			)
 			edit_data = (lastname, firstname, middlename, email, convert_string_to_date(birthdate), gender, int(classification), int(cell_leader_id), member_id)
 			cursor.execute(edit_stmt, edit_data)
