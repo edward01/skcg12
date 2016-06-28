@@ -63,6 +63,82 @@ function gotoTop() {
 }
 
 
+//- ajax post (show loader)
+function ajax_post(url_action, params, success_msg, success_func, always_func) {
+    toastr.clear();
+    toggle_loader(true);
+    $.post(url_action, params, function(resp) {
+        if (resp.hasOwnProperty('error')) {
+            toastr.error(resp.error, "Process failed.", {timeOut: 120000});
+        }
+        else {
+            toastr['success'](success_msg);
+            success_func(resp);
+        }
+    })
+    .fail(function() {
+        toastr.error('Please try again later.', "Server Error", {timeOut: 120000});
+    })
+    .always(function() {
+        always_func();
+        toggle_loader(false);
+    });
+}
+
+//- ajax post2 (no loader; disable fields, buttons)
+function ajax_post_form($frmProcess, success_msg, success_func, always_func) {
+    toastr.clear();
+	var origBtnHtml = $frmProcess.find('button[type="submit"]').html();
+    var serialized = $frmProcess.serialize();
+    $frmProcess.find('input, button').prop('disabled', true);
+    $frmProcess.find('button[type="submit"]').html('Processing...');
+    $.post($frmProcess.attr('action'), serialized, function(resp) {
+        if (resp.hasOwnProperty('error')) {
+            toastr.error(resp.error, "Process failed.", {timeOut: 120000});
+        }
+        else {
+            toastr['success'](success_msg);
+            success_func(resp);
+        }
+    })
+    .fail(function() {
+        toastr.error('Please try again later.', "Server Error", {timeOut: 120000});
+    })
+    .always(function() {
+        always_func();
+        $frmProcess.find('input, button').prop('disabled', false);
+        $frmProcess.find('button[type="submit"]').html(origBtnHtml);
+    });
+}
+
+// //- ajax post3 (file upload)
+// function ajax_post_file($frmProcess, success_msg, success_func, always_func) {
+//     toastr.clear();
+// 	var origBtnHtml = $frmProcess.find('button[type="submit"]').html();
+//     // var serialized = $frmProcess.serialize();
+// 	var serialized = new FormData($frmProcess[0]);
+//     $frmProcess.find('input, button').prop('disabled', true);
+//     $frmProcess.find('button[type="submit"]').html('Processing...');
+//     $.post($frmProcess.attr('action'), serialized, function(resp) {
+//         if (resp.hasOwnProperty('error')) {
+//             toastr.error(resp.error, "Process failed.", {timeOut: 120000});
+//         }
+//         else {
+//             toastr['success'](success_msg);
+//             success_func(resp);
+//         }
+//     })
+//     .fail(function() {
+//         toastr.error('Please try again later.', "Server Error", {timeOut: 120000});
+//     })
+//     .always(function() {
+//         always_func();
+//         $frmProcess.find('input, button').prop('disabled', false);
+//         $frmProcess.find('button[type="submit"]').html(origBtnHtml);
+//     });
+// }
+
+
 //-----------------
 //-- MAIN
 //-----------------
@@ -77,7 +153,6 @@ $(function() {
 	}
 
 	//- sweet alert settings
-
 
 	//- bootstrap toggle (checkbox) settings
 

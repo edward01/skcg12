@@ -241,7 +241,7 @@ ul.dashboard-list li a span {
     background-color: white;
     z-index: 2;
     position: relative;
-    margin-bottom: 40px !important;
+    /*margin-bottom: 40px !important;*/
 }
 
 .thumbnails > li {
@@ -251,8 +251,8 @@ ul.dashboard-list li a span {
 
 .thumbnail img, .thumbnail > a {
     z-index: 2;
-    height: 100px;
-    width: 100px;
+    /*height: 100px;
+    width: 100px;*/
     position: relative;
     display: block;
 }
@@ -699,7 +699,7 @@ ul.github-buttons li {
 }
 
 /* ===== common styles ======= */
-/* label.error { 
+/* label.error {
 	color: red;
 	font-weight: normal;
 } */

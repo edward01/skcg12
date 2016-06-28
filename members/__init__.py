@@ -1,15 +1,19 @@
-#!/usr/bin/env python
 from flask import Blueprint, session, render_template, url_for, request, redirect, flash, current_app as app, jsonify
-# from bson.objectid import ObjectId
-# from bson.json_util import dumps
 # from datetime import datetime
 from pprint import pprint
 import os
 from utils import convert_string_to_date, convert_date_to_string, generate_random_password, cint, convert_date_to_string_custom
 import random
 import time  # used for sleep() only
+from werkzeug import secure_filename
 
 members_app = Blueprint('members', __name__, url_prefix='/members')
+ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png', 'gif'])
+
+
+def allowed_file(filename):
+	return '.' in filename and \
+		   filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 @members_app.before_request
@@ -159,11 +163,11 @@ def add_edit_post():
 
 # Random password generator for activation
 def generate_random_password():
-     str = []
-     chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
-     for k in range(0, 8):
-          str.append(random.choice(chars))
-     return ''.join(str)
+	 str = []
+	 chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+	 for k in range(0, 8):
+		  str.append(random.choice(chars))
+	 return ''.join(str)
 
 
 @members_app.route('/password_reset', methods=['POST'])
@@ -190,3 +194,14 @@ def password_reset():
 		return jsonify({'status': 'error', 'message': 'Processing error. Please try again later.'})
 	finally:
 		cursor.close()
+
+
+@members_app.route('/upload-image', methods=['POST'])
+def upload_image():
+	file = request.files['avatar']
+	pprint(file)
+	if file and allowed_file(file.filename):
+		filename = secure_filename(file.filename)
+		return jsonify({'status': 'ok'})
+	else:
+		return jsonify({'status': 'error', 'message': 'Invalid image file.'})

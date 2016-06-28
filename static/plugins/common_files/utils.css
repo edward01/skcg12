@@ -38,3 +38,9 @@ a.scrollup:hover {
 #div_loader > div.modal-dialog {
 	width: 300px;
 }
+
+
+/* SELECT2 styles */
+div.select2-container { padding: 0;}
+a.select2-choice { height: 33px !important; }
+span.select2-chosen { margin-top: 3px; }

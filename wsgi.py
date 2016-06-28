@@ -2,28 +2,28 @@
 # Schema:
 # -------------------------------------------------
 # users
-#   _id                     objectid
-#   username                unicode
-#   password                unicode
-#   last_login_timestamp    datetime
-#   acct_active             boolean
-#   password_temp           boolean
+#   _id					 objectid
+#   username				unicode
+#   password				unicode
+#   last_login_timestamp	datetime
+#   acct_active			 boolean
+#   password_temp		   boolean
 #
 # members
-#   _id                     objectid
-#   lastname                unicode
-#   firstname               unicode
-#   middlename              unicode
+#   _id					 objectid
+#   lastname				unicode
+#   firstname			   unicode
+#   middlename			  unicode
 #   birthdate
 #   gender
-#   cell_leader_id          objectid (of cell leader)
-#   is_active               boolean
-#   cell_group_id           objectid (of 'cell_groups' collection)
-#   user_id                 objectid (of 'users' collection)
+#   cell_leader_id		  objectid (of cell leader)
+#   is_active			   boolean
+#   cell_group_id		   objectid (of 'cell_groups' collection)
+#   user_id				 objectid (of 'users' collection)
 #
 # cell_groups
-#   _id                     objectid
-#   name                    unicode
+#   _id					 objectid
+#   name					unicode
 # -------------------------------------------------
 
 import os
@@ -73,100 +73,94 @@ app.register_blueprint(setup_app)
 
 # @app.before_request
 # def before_request():
-#     if request.endpoint is None and app.static_regex.match(request.path):
-#         path_split = request.path.split('/')
-#         for static_folder in ('css', 'font', 'img', 'js'):
-#             try:
-#                 return redirect(os.path.join('/static', '/'.join(path_split[path_split.index(static_folder):])))
-#             except:
-#                 continue
+#	 if request.endpoint is None and app.static_regex.match(request.path):
+#		 path_split = request.path.split('/')
+#		 for static_folder in ('css', 'font', 'img', 'js'):
+#			 try:
+#				 return redirect(os.path.join('/static', '/'.join(path_split[path_split.index(static_folder):])))
+#			 except:
+#				 continue
 #
-#     if 'username' not in session and request.endpoint not in ('login_form', 'login_submit', 'static'):
-#         return redirect(url_for('login_form'))
+#	 if 'username' not in session and request.endpoint not in ('login_form', 'login_submit', 'static'):
+#		 return redirect(url_for('login_form'))
 
 
 @app.before_request
 def before_request():
-    request.mod = 'login'
-    # print request.endpoint
-    # print session
-
-    # if request.endpoint != 'static':
-    #     if request.endpoint not in ('user.login_form', 'user.login_submit') and 'authorized' not in session:
-    #         return redirect(url_for('user.login_form'))
-
-    # if request.endpoint in ('user.login_form', 'user.login_submit') and 'authorized' in session:
-    #     return redirect(url_for('user.login_form'))
-
-    # print('-------------------BEFORE REQUEST-------------------')
+	request.mod = 'login'
+	# print '=> request.endpoint:', request.endpoint
+	# print '=> request.blueprint:', request.blueprint
+	if 'user' not in session and request.blueprint is not None:
+		return redirect(url_for('login'))
 
 
 # @app.errorhandler(404)
 # def not_found(error):
-#     return render_template('error.html'), 404
+#	 return render_template('error.html'), 404
 
 
 @app.route('/', methods=['GET'])
 @app.route('/login', methods=['GET'])
 def login():
-    return render_template('login.html')
+	return render_template('login.html')
 
 
 @app.route('/login', methods=['POST'])
 def login_submit():
-    print '== login post'
-    username = request.form.get('username', '')
-    password = request.form.get('password', '')
+	print '== login post'
+	username = request.form.get('username', '')
+	password = request.form.get('password', '')
 
-    if username == MASTER_USERNAME and password == MASTER_PASSWORD:
-        session['user'] = {
-            'userid': 0,
-            'username': 'Admin',
-            'member_id': 0
-        }
-        return redirect(url_for('dashboard.index'))
+	if username == MASTER_USERNAME and password == MASTER_PASSWORD:
+		session['user'] = {
+			'userid': 0,
+			'username': 'Admin',
+			'member_id': 0
+		}
+		return redirect(url_for('dashboard.index'))
 
-    cursor = app.mysql.connect().cursor()
-    cursor.execute('SELECT * from users where username = %s and password = SHA1(%s)', (username, password))
-    data = cursor.fetchone()
-    cursor.close()
+	cursor = app.mysql.connect().cursor()
+	cursor.execute('SELECT * from users where username = %s and password = SHA1(%s)', (username, password))
+	data = cursor.fetchone()
+	cursor.close()
 
-    if data is None:
-        flash('Access Denied', 'error')
-        return redirect(url_for('.login'))
-    else:
-        session['user'] = data
-        return redirect(url_for('dashboard.index'))
+	if data is None:
+		flash('Access Denied', 'error')
+		return redirect(url_for('.login'))
+	else:
+		session['user'] = data
+		return redirect(url_for('dashboard.index'))
 
 
 @app.route('/logout', methods=['GET'])
 def logout():
-    print '== logout get'
-    session.clear()
-    return redirect(url_for('.login'))
+	print '== logout get'
+	session.clear()
+	return redirect(url_for('.login'))
 
 
-# class test(db.Model):
-#     __tablename__ = 'test'
-#     id = db.Column(db.Integer, primary_key = True)
-#     username = db.Column(db.String(50))
-#     firstname = db.Column(db.String(50))
-#     lastname = db.Column(db.String(50))
-#
-#
-# @app.route('/mysql_test', methods=['GET'])
-# def mysql_test():
-#     results = test.query.limit(10).offset(0).all()
-#
-#     json_results = []
-#     for result in results:
-#         d = {'username': result.username,
-#             'firstname': result.firstname,
-#             'lastname': result.lastname}
-#         json_results.append(d)
-#
-#     return jsonify(items=json_results)
+@app.route('/signup', methods=['GET'])
+def signup():
+	pass
+	# if 'user' in session:
+	# 	session.clear()
+	# return render_template('login/signup.html', RECAPTCHA_SITE_KEY=RECAPTCHA_SITE_KEY)
+
+
+@app.route('/forgot-password', methods=['GET'])
+def forgot_pwd():
+	pass
+	# if 'user' in session:
+	# 	session.clear()
+	# return render_template('login/forgot_pwd.html')
+
+
+@app.route('/profile', methods=['GET'])
+def profile():
+	pass
+	# request.mod = 'profile'
+	# return render_template('profile/index.html')
 
 
 if __name__ == '__main__':
-    app.run()
+	app.run()
