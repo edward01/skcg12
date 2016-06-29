@@ -30,17 +30,19 @@ import os
 import re
 # import datetime
 from flask import Flask, render_template, redirect, url_for, request, session, flash, jsonify
-from config import MYSQL_CONFIG, DEBUG
-from utils import check_hash
-from pprint import pprint
+from config import DEBUG
+# from utils import check_hash
+# from pprint import pprint
 # from flaskext.mysql import MySQL
-from mysql import MySQL
+# from mysql import MySQL
 from flask_jsglue import JSGlue
+from models.user import User
 
 from dashboard import dashboard_app
 from members import members_app
 from reports import reports_app
 from setup import setup_app
+
 
 MASTER_USERNAME = 'skc-admin'
 MASTER_PASSWORD = '56cd07000362b73cbfc6973dcd3aa275'
@@ -55,9 +57,9 @@ app.debug = DEBUG
 app.reloader = DEBUG
 
 # database
-app.mysql = MySQL()
-app.config.update(MYSQL_CONFIG)
-app.mysql.init_app(app)
+# app.mysql = MySQL()
+# app.config.update(MYSQL_CONFIG)
+# app.mysql.init_app(app)
 
 # JSGlue
 app.jsglue = JSGlue(app)
@@ -119,16 +121,17 @@ def login_submit():
 		}
 		return redirect(url_for('dashboard.index'))
 
-	cursor = app.mysql.connect().cursor()
-	cursor.execute('SELECT * from users where username = %s and password = SHA1(%s)', (username, password))
-	data = cursor.fetchone()
-	cursor.close()
+	# cursor = app.mysql.connect().cursor()
+	# cursor.execute('SELECT * from users where username = %s and password = SHA1(%s)', (username, password))
+	# data = cursor.fetchone()
+	# cursor.close()
 
-	if data is None:
+	user = User.getUser({'username': username})
+	if user is None:
 		flash('Access Denied', 'error')
 		return redirect(url_for('.login'))
 	else:
-		session['user'] = data
+		session['user'] = user
 		return redirect(url_for('dashboard.index'))
 
 
