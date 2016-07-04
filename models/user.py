@@ -2,6 +2,7 @@
 from minimongo import Model, Index
 from bson.objectid import ObjectId
 from config import DB_CONFIG
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class User(Model):
@@ -33,6 +34,13 @@ class User(Model):
 			if not isinstance(filters, ObjectId):
 				filters = ObjectId(filters)
 			return User.collection.find_one({'_id': filters})
+
+	@staticmethod
+	def make_hash(password):
+		return generate_password_hash(password)
+
+	def check_hash(self, password):
+		return check_password_hash(self.password, password)
 
 
     # @mongo.update
