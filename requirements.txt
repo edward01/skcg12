@@ -4,7 +4,6 @@ Flask-JSGlue==0.3
 itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
-minimongo==0.2.9
 pymongo==2.8
 six==1.10.0
 virtualenv==15.0.2
