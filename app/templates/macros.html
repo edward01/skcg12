@@ -1,0 +1,195 @@
+{% macro form_user_entry(entry_mode, member, user_acct, ministries_list) -%}
+<form role="form" id="form_member_info" method="post" action="{{ url_for('.add_edit_post') }}">
+    <input type="hidden" name="_id" value="{{ member['_id'] }}">
+
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-info">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h3 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        <i class="glyphicon glyphicon-star"></i> Primary Info
+                    </a>
+                </h3>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="lastname">Photo</label>
+                        &nbsp;
+                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#mdl_upload"><i class="glyphicon glyphicon-pencil"></i> Change</button>
+                        <br>
+                        <img src="{{ url_for('static', filename='img/default_avatar.jpg') }}" alt="Sample Avatar" class="img-thumbnail member-avatar" />
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Last Name</label>
+                        <input type="text" class="form-control" name="lastname" required minlength="2" value="{{ member['lastname'] }}" placeholder="Ex: Dela Cruz">
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname">First Name</label>
+                        <input type="text" class="form-control" name="firstname" required minlength="2" value="{{ member['firstname'] }}" placeholder="Ex: Pedro">
+                    </div>
+                    <div class="form-group">
+                        <label for="middlename">Middle Name</label>
+                        <input type="text" class="form-control" name="middlename" value="{{ member['middlename'] }}" placeholder="Ex: Protacio">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthdate">Birth Date</label>
+                        <div class="input-group date">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                            <input type="text" class="form-control" name="birthdate" id="txt_birthdate" placeholder="mm/dd/yyyy" required value="{{ member['birthdate'] }}" data-mask="99/99/9999">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ select_dropdown_static('Gender', 'gender', ['Male', 'Female'], member['gender'], is_required=true) }}
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" class="form-control" name="email" value="{{ member['email'] }}" placeholder="Ex: pdelacruz@yahoo.com">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-info">
+            <div class="panel-heading" role="tab" id="headingTwo">
+                <h3 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <i class="glyphicon glyphicon-plus"></i> Church Profile
+                    </a>
+                </h3>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                <div class="panel-body">
+                    <div class="form-group">
+                        {{ select_dropdown_dynamic('Ministries', 'ministries', ministries_list, selected_val='', is_required=true) }}
+                    </div>
+                    <div class="form-group">
+                        {{ select_dropdown_static('Classification', 'classification', ['Member', 'Cell Leader'], member['classification'], is_required=false) }}
+                    </div>
+                    <div class="form-group">
+                        {{ select_dropdown_dynamic('Ministries', 'ministries', ministries_list, selected_val='', is_required=true) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-info">
+            <div class="panel-heading" role="tab" id="headingThree">
+                <h3 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <i class="glyphicon glyphicon-cog"></i> User Account
+                    </a>
+                </h3>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        {% if entry_mode == 'add' %}
+                            <input type="text" class="form-control" name="username" required placeholder="Ex: pdelacruz">
+                        {% else %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading">{{ user_acct['username'] }}</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if entry_mode == 'edit' %}
+                    <div class="form-group" style="display: none;" id="div_new_pwd">
+                        <label for="username">New Password</label>
+                        <div class="panel panel-default">
+                            <div class="panel-heading"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-danger" id="bt_generate_pwd"><i class="glyphicon glyphicon-refresh"></i> Generate New Password</button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if entry_mode == 'add' %}
+    <hr>
+    <div class="form-group">
+        <label><input type="checkbox" id="cbx_add_another" data-toggle="toggle"> &nbsp; Create another entry after this one</label>
+    </div>
+    {% endif %}
+    <div class="text-left page_buttons {% if entry_mode == 'edit' %}hide{% endif %}">
+        <hr>
+        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Submit</button>
+        <button type="button" class="btn btn-default" id="bt_cancel">Cancel</button>
+    </div>
+</form>
+{%- endmacro %}
+
+
+
+{% macro select_dropdown_dynamic(input_label, input_name, option_list, selected_val='', is_required=true) -%}
+    <label>{{ input_label }}</label>
+    <select class="form-control w-search" name="{{input_name}}" id="sel_{{input_name}}" {%if is_required%}required=""{%endif%}>
+        <option value="">- Select -</option>
+        <option value="--new-option--">* Not in list, supply a new option</option>
+        {% for item in option_list|sort(attribute='name') -%}
+        <option value="{{item['_id']}}" {%if selected_val==item['_id']%}selected{%endif%}>{{item['name']}}</option>
+        {% endfor -%}
+    </select>
+    {# <!-- should also call select_dropdown_dynamic_script() at the end of the html file --> #}
+{% endmacro -%}
+
+{% macro select_dropdown_dynamic_script() -%}
+    <script type="text/javascript">
+    $(document).ready(function() {
+        //-- select2 onchange event (to create new entry)
+    	$('select.w-search').on("change", function(e) {
+    		var $this_select = $(this);
+    		var src_name = $(this).attr('name');
+    		var this_label = $(this).closest('div.form-group').find('label').first().html();
+    		if ($(this).val() == '--new-option--') {
+    			showPrompt(this_label, 'Please supply new entry for this field', 'Write something', function(input_val) {
+    				if (input_val === false) {
+    					$this_select.val('').trigger('change');
+    				}
+    				else {
+    					// $.post("", {src_name: src_name, input_val: input_val}, function(resp) {
+    				    //     if (resp.hasOwnProperty('error')) {
+    				    //         toastr.error(resp.error, "Process failed.", {timeOut: 120000});
+                        //         $this_select.val('').trigger('change');
+    				    //     }
+    				    //     else {
+                        //         $this_select.val(resp['_id']).trigger('change');
+    				    //     }
+    				    // })
+                        // Set the value, creating a new option if necessary
+                        if ($this_select.find('option:contains('+input_val+')').length) {
+                            var selected_val = $this_select.find('option:contains('+input_val+')').val();
+                            $this_select.val(selected_val).trigger('change');
+                        } else {
+                            var newOption = new Option(input_val, input_val, true, true);
+                            $this_select.append(newOption).trigger('change');
+                        }
+    					swal.close();
+    				}
+    			});
+    		}
+    	});
+    });
+    </script>
+{% endmacro -%}
+
+
+
+{% macro select_dropdown_static(input_label, input_name, option_list, selected_val='', is_required=true) -%}
+    <label>{{ input_label }}</label>
+    <select class="form-control wo-search" name="{{ input_name }}" {%if is_required%}required=""{%endif%}>
+        <option value="">- Select -</option>
+        {% for item in option_list -%}
+        <option value="{{item}}" {%if selected_val==item%}selected{%endif%}>{{item}}</option>
+        {% endfor -%}
+    </select>
+{% endmacro -%}
+
+
+<!-- TODO
+- select2 multiselect (ex: ministries)
+-->

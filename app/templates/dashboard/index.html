@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% set active_page = "dashboard" %}
+{% set show_breadcrumb = False %}
+{% block title %}Dashboard{% endblock %}
+
+{% block head %}
+<style type="text/css">
+    img.main_g12 {
+        height: 80px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-3 col-sm-3 col-xs-6">
+            <a data-toggle="tooltip" title="6 new members (last 30 days)" class="well top-block" href="#">
+                <i class="glyphicon glyphicon-user blue"></i>
+                <div>Total Members</div>
+                <div>507</div>
+                <span class="notification">6</span>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-3 col-xs-6">
+            <a data-toggle="tooltip" title="4 new pro members (last 30 days)" class="well top-block" href="#">
+                <i class="glyphicon glyphicon-star green"></i>
+                <div>Cell Leaders</div>
+                <div>228</div>
+                <span class="notification green">4</span>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-3 col-xs-6">
+            <a data-toggle="tooltip" title="1 new cell group (last 30 days)" class="well top-block" href="#">
+                <i class="glyphicon glyphicon-facetime-video yellow"></i>
+                <div>Cell Groups</div>
+                <div>20</div>
+                <span class="notification yellow">1</span>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-3 col-xs-6">
+            <a data-toggle="tooltip" title="12 new messages." class="well top-block" href="#">
+                <i class="glyphicon glyphicon-envelope red"></i>
+                <div>Others</div>
+                <div>25</div>
+                <span class="notification red">12</span>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="box col-md-12">
+            <div class="box-inner">
+                <div class="box-header well">
+                    <h2><i class="glyphicon glyphicon-info-sign"></i> Introduction</h2>
+                </div>
+                <div class="box-content row">
+                    <div class="col-lg-7 col-md-12">
+                        <h1><img src="{{ url_for('static', filename='img/g12_main.png') }}" alt="G12 Logo" class="main_g12"> Vision G12<br>
+                        <small>Brought to you by SKC community</small>
+                        </h1>
+                        <p>
+                            Nulla porttitor accumsan tincidunt. Vivamus suscipit tortor eget felis porttitor volutpat. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Nulla quis lorem ut libero malesuada feugiat. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Proin eget tortor risus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+<script>
+$(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+{% endblock %}

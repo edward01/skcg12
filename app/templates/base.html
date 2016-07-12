@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ JSGlue.include() }}
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %} :: {{ config.APP_TITLE }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="G12 SKC by Sambahang Kristiyano sa Canumay">
+    <meta name="author" content="Edward Jose">
+
+    <link id="bs-css" rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-cerulean.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/charisma-app.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/responsive-tables/responsive-tables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/toastr/toastr.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-toggle/bootstrap-toggle.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/sweetalert/sweetalert.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/common_files/utils.css') }}">
+    <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/%s' % config.FAV_ICON) }}">
+    <style>
+        a.navbar-brand { width: 200px; }
+        a.navbar-brand img {
+            width: 60px;
+            height: 40px;
+            position: relative;
+            top: -10px;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-inner">
+            <button type="button" class="navbar-toggle pull-left animated flip">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
+                <img class="hidden-xs" src="{{ url_for('static', filename='img/church_logo.png') }}" alt="Church Logo">
+                <span>{{ config.APP_TITLE }}</span>
+            </a>
+            <div class="btn-group pull-right">
+                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"> Admin</span>
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url_for('profile.index') }}" class="show-redirect">Profile</a></li>
+                    <li class="divider"></li>
+                    <li><a href="{{ url_for('logout') }}" class="show-redirect">Logout</a></li>
+                </ul>
+            </div>
+            <div class="btn-group pull-right theme-container animated tada">
+                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="glyphicon glyphicon-tint"></i><span
+                    class="hidden-sm hidden-xs"> Change Theme / Skin</span>
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" id="themes">
+                    <li><a data-value="classic" href="#"><i class="whitespace"></i> Classic</a></li>
+                    <li><a data-value="cerulean" href="#"><i class="whitespace"></i> Cerulean</a></li>
+                    <li><a data-value="cyborg" href="#"><i class="whitespace"></i> Cyborg</a></li>
+                    <li><a data-value="simplex" href="#"><i class="whitespace"></i> Simplex</a></li>
+                    <li><a data-value="darkly" href="#"><i class="whitespace"></i> Darkly</a></li>
+                    <li><a data-value="lumen" href="#"><i class="whitespace"></i> Lumen</a></li>
+                    <li><a data-value="slate" href="#"><i class="whitespace"></i> Slate</a></li>
+                    <li><a data-value="spacelab" href="#"><i class="whitespace"></i> Spacelab</a></li>
+                    <li><a data-value="united" href="#"><i class="whitespace"></i> United</a></li>
+                </ul>
+            </div>
+
+            <ul class="collapse navbar-collapse nav navbar-nav top-menu">
+                <!-- <li><a href="#"><i class="glyphicon glyphicon-globe"></i> Visit Site</a></li>
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown"><i class="glyphicon glyphicon-star"></i> Dropdown <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">One more separated link</a></li>
+                    </ul>
+                </li> -->
+                {% if show_search_input|default(False) -%}
+                <li>
+                    <form class="navbar-search pull-left">
+                        <input placeholder="Search" class="search-query form-control col-md-10" name="query" id="txt_main_search" type="text" autocomplete="off">
+                    </form>
+                </li>
+                {% endif -%}
+            </ul>
+        </div>
+    </div>
+    <div class="ch-container">
+        <div class="row">
+            <div class="col-sm-2 col-lg-2">
+                <div class="sidebar-nav">
+                    <div class="nav-canvas">
+                        <div class="nav-sm nav nav-stacked">
+                        </div>
+                        <ul class="nav nav-pills nav-stacked main-menu">
+                            <li {% if active_page == 'dashboard' %}class="active"{% endif %}><a class="ajax-link show-redirect" href="{{ url_for('dashboard.index') }}"><i class="glyphicon glyphicon-home"></i><span> Dashboard</span></a></li>
+                            <li {% if active_page == 'members' %}class="active"{% endif %}><a class="ajax-link show-redirect" href="{{ url_for('members.index') }}"><i class="glyphicon glyphicon-list-alt"></i><span> Members</span></a></li>
+                            <li {% if active_page == 'reports' %}class="active"{% endif %}><a class="ajax-link show-redirect" href="{{ url_for('reports.index') }}"><i class="glyphicon glyphicon-print"></i><span> Reports</span></a></li>
+                            <li {% if active_page == 'setup' %}class="active"{% endif %}><a class="ajax-link show-redirect" href="{{ url_for('setup.index') }}"><i class="glyphicon glyphicon-cog"></i><span> Data Setup</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <noscript>
+                <div class="alert alert-block col-md-12">
+                    <h4 class="alert-heading">Warning!</h4>
+                    <p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a>
+                        enabled to use this site.
+                    </p>
+                </div>
+            </noscript>
+            <div id="content" class="col-lg-10 col-sm-10">
+                {% if show_breadcrumb|default(True) -%}
+                <div>
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="/{{ active_page }}">{{ active_page|title }}</a>
+                        </li>
+                        {% if sub_active_page %}
+                        <li>
+                            <a href="#">{{ sub_active_page|title }}</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif -%}
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        <hr>
+        <footer class="row">
+            <p class="col-md-12 copyright" style="text-align: center;">&copy; Sambahang Kristiyano sa Canumay (SKC) - 2016</p>
+            <a href="#" class="scrollup" title="Back to Top"><i class="glyphicon glyphicon-chevron-up"></i></a>
+        </footer>
+    </div>
+
+
+    <div class="modal fade" id="div_loader" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img src="{{ url_for('static', filename='img/ajax-loaders/ajax-loader-4.gif') }}" /> &nbsp; Please wait...
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script src="{{ url_for('static', filename='plugins/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.cookie.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/chosen/chosen.jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/charisma.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/toastr/toastr.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/sweetalert/sweetalert.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/common_files/utils.js') }}"></script>
+{% block footer %}{% endblock %}
+<script>
+$(function() {
+    //- Toastr Message - types: [success, info, warning, error]
+    {% with messages = get_flashed_messages(with_categories=true) -%}
+        {% if messages -%}
+            {% for category, message in messages -%}
+                toastr["{{ category }}"]("{{ message }}");
+            {% endfor -%}
+        {% endif -%}
+    {% endwith -%}
+});
+</script>
+</body>
+</html>

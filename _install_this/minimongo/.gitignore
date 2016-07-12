@@ -1,7 +1,0 @@
-*.pyc
-*~
-build/
-dist/
-minimongo.egg-info/
-minimongo/app_config.py
-pymongo-*/

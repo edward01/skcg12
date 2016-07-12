@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% set active_page = "User Profile" %}
+{% set show_breadcrumb = False %}
+{% block title %}User Profile{% endblock %}
+{% from "macros.html" import form_user_entry, select_dropdown_dynamic_script %}
+
+{% block head %}
+<style type="text/css">
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="box col-md-12">
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2><i class="glyphicon glyphicon-edit"></i> User Profile</h2>
+            </div>
+            <div class="box-content row">
+                <div class="col-md-12">
+					{{ form_user_entry('edit', member, user_acct, ministries_list) }}
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<script>
+$(function() {
+
+});
+</script>
+{{ select_dropdown_dynamic_script() }}
+{% endblock %}

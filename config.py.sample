@@ -1,25 +1,14 @@
+DEBUG = True
+DB_CONFIG = {
+	'host': 'localhost',
+	'db': 'skcg12',
+	'user': 'root',
+	'password': ''
+}
+
 import os
 _basedir = os.path.abspath(os.path.dirname(__file__))
 
-MYSQL_CONFIG = {
-	'MYSQL_DATABASE_USER': 'root',
-	'MYSQL_DATABASE_PASSWORD': '',
-	'MYSQL_DATABASE_DB': 'test',
-	'MYSQL_DATABASE_HOST': 'localhost'
-}
-
-DEBUG = True
-# SECRET_KEY = 'helloworld'
-
-THREADS_PER_PAGE = 8
-
-CSRF_ENABLED = True
-CSRF_SESSION_KEY = 'session key'
-
-# RECAPTCHA_USE_SSL = False
-# RECAPTCHA_PUBLIC_KEY = ''
-# RECAPTCHA_PRIVATE_KEY = ''
-# RECAPTCHA_OPTIONS = {'theme': 'white'}
-
 APP_TITLE = 'G12 SKC'
 FAV_ICON = 'favicon.ico'
+APP_VERSION = '1.0'
